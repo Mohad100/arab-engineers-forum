@@ -1,0 +1,59 @@
+@page "{recipient?}"
+@model Fourm.Pages.SendMessageModel
+@{
+    ViewData["Title"] = "Send Private Message";
+}
+
+<div class="container-fluid" style="max-width: 1200px; margin: 50px auto;">
+    <div class="card">
+        <div class="card-header">
+            <h2>📨 Send Message</h2>
+        </div>
+        <div class="card-body">
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="alert alert-danger">@Model.ErrorMessage</div>
+            }
+
+            <form method="post">
+                <!-- Recipient Info (Read-only display) -->
+                <div class="form-group mb-3">
+                    <label class="form-label"><strong>To:</strong></label>
+                    <p class="form-control-plaintext">
+                        <span class="badge bg-primary">@Model.RecipientUsername</span>
+                    </p>
+                    <input type="hidden" asp-for="RecipientUsername" />
+                </div>
+
+                <!-- Subject Field -->
+                <div class="form-group mb-3">
+                    <label asp-for="Subject" class="form-label">Subject:</label>
+                    <input type="text" asp-for="Subject" class="form-control" placeholder="Enter message subject" required maxlength="200" />
+                    <span asp-validation-for="Subject" class="text-danger"></span>
+                </div>
+
+                <!-- Message Content Field -->
+                <div class="form-group mb-3">
+                    <label asp-for="MessageContent" class="form-label">Message:</label>
+                    <textarea asp-for="MessageContent" class="form-control" rows="8" placeholder="Type your message here..." required maxlength="5000"></textarea>
+                    <span asp-validation-for="MessageContent" class="text-danger"></span>
+                    <small class="form-text text-muted">Maximum 5000 characters</small>
+                </div>
+
+                <!-- Submit Buttons -->
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-send"></i> Send Message
+                    </button>
+                    <a asp-page="/UserProfile" asp-route-username="@Model.RecipientUsername" class="btn btn-secondary">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

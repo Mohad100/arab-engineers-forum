@@ -1,0 +1,326 @@
+@page
+@model CreateThreadModel
+@{
+    ViewData["Title"] = "إنشاء موضوع";
+}
+
+<div class="row justify-content-center my-5">
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-5">
+                @if (Model.PreselectedCategory != null)
+                {
+                    <div class="mb-4">
+                        <a asp-page="/Forum" asp-route-category="@Model.PreselectedCategory.Id" class="btn btn-sm btn-outline-secondary rounded-pill">
+                            ← العودة إلى @Model.PreselectedCategory.Name
+                        </a>
+                    </div>
+                    <h2 class="mb-4 fw-bold text-primary">✨ إنشاء موضوع جديد في @Model.PreselectedCategory.Icon @Model.PreselectedCategory.Name</h2>
+                    <p class="text-muted mb-4">@Model.PreselectedCategory.Description</p>
+                }
+                else
+                {
+                    <h2 class="mb-4 fw-bold text-primary">✨ إنشاء موضوع جديد</h2>
+                    <p class="text-muted mb-4">ابدأ محادثة جديدة وشارك أفكارك مع المجتمع!</p>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Oops!</strong> @Model.ErrorMessage
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                <form method="post" enctype="multipart/form-data">
+                    @if (Model.PreselectedCategory == null)
+                    {
+                        <div class="mb-4">
+                            <label asp-for="Input.CategoryId" class="form-label fw-semibold fs-5">القسم</label>
+                            <select asp-for="Input.CategoryId" class="form-select form-select-lg rounded-pill">
+                                @foreach (var category in Fourm.Models.ForumCategory.AllCategories)
+                                {
+                                    <option value="@category.Id">@category.Icon @category.Name</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Input.CategoryId" class="text-danger small"></span>
+                        </div>
+                    }
+                    else
+                    {
+                        <input type="hidden" asp-for="Input.CategoryId" />
+                        <input type="hidden" name="Category" value="@Model.Category" />
+                    }
+
+                    <div class="mb-4">
+                        <label asp-for="Input.Title" class="form-label fw-semibold fs-5">عنوان الموضوع</label>
+                        <input asp-for="Input.Title" class="form-control form-control-lg rounded-pill" 
+                               placeholder="عن ماذا يتحدث موضوعك؟" autofocus />
+                        <span asp-validation-for="Input.Title" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Input.Content" class="form-label fw-semibold fs-5">المحتوى</label>
+                        <div class="text-editor-toolbar">
+                            <div class="toolbar-group">
+                                <button type="button" class="toolbar-btn" onclick="formatText('bold')" title="غامق">
+                                    <i class="bi bi-type-bold"></i>
+                                </button>
+                                <button type="button" class="toolbar-btn" onclick="formatText('italic')" title="مائل">
+                                    <i class="bi bi-type-italic"></i>
+                                </button>
+                                <button type="button" class="toolbar-btn" onclick="formatText('underline')" title="تحته خط">
+                                    <i class="bi bi-type-underline"></i>
+                                </button>
+                                <button type="button" class="toolbar-btn" onclick="formatText('strikethrough')" title="يتوسطه خط">
+                                    <i class="bi bi-type-strikethrough"></i>
+                                </button>
+                            </div>
+                            <span class="toolbar-divider"></span>
+                            <div class="toolbar-group">
+                                <select class="toolbar-select" onchange="setFontFamily(this.value)">
+                                    <option value="">نوع الخط</option>
+                                    <option value="'Segoe UI', 'Cairo', 'Tajawal', sans-serif">الافتراضي</option>
+                                    <option value="'Arial', sans-serif">Arial</option>
+                                    <option value="'Times New Roman', serif">Times New Roman</option>
+                                    <option value="'Courier New', monospace">Courier New</option>
+                                    <option value="'Georgia', serif">Georgia</option>
+                                    <option value="'Verdana', sans-serif">Verdana</option>
+                                </select>
+                                <select class="toolbar-select" onchange="setFontSize(this.value)">
+                                    <option value="">حجم الخط</option>
+                                    <option value="12px">12</option>
+                                    <option value="14px">14</option>
+                                    <option value="16px" selected>16</option>
+                                    <option value="18px">18</option>
+                                    <option value="20px">20</option>
+                                    <option value="22px">22</option>
+                                    <option value="24px">24</option>
+                                    <option value="28px">28</option>
+                                    <option value="32px">32</option>
+                                </select>
+                            </div>
+                            <span class="toolbar-divider"></span>
+                            <div class="toolbar-group">
+                                <input type="color" class="toolbar-color" onchange="setTextColor(this.value)" title="لون النص" value="#000000">
+                                <input type="color" class="toolbar-color" onchange="setBackgroundColor(this.value)" title="لون الخلفية" value="#ffffff">
+                            </div>
+                            <span class="toolbar-divider"></span>
+                            <div class="toolbar-group">
+                                <button type="button" class="toolbar-btn" onclick="formatText('alignRight')" title="محاذاة لليمين">
+                                    <i class="bi bi-text-right"></i>
+                                </button>
+                                <button type="button" class="toolbar-btn" onclick="formatText('alignCenter')" title="محاذاة للوسط">
+                                    <i class="bi bi-text-center"></i>
+                                </button>
+                                <button type="button" class="toolbar-btn" onclick="formatText('alignLeft')" title="محاذاة لليسار">
+                                    <i class="bi bi-text-left"></i>
+                                </button>
+                            </div>
+                            <span class="toolbar-divider"></span>
+                            <div class="toolbar-group">
+                                <button type="button" class="toolbar-btn" onclick="insertEmoji()" title="إدراج رمز تعبيري">
+                                    <i class="bi bi-emoji-smile"></i>
+                                </button>
+                                <button type="button" class="toolbar-btn" onclick="insertLink()" title="إدراج رابط">
+                                    <i class="bi bi-link-45deg"></i>
+                                </button>
+                                <button type="button" class="toolbar-btn" onclick="clearFormatting()" title="مسح التنسيق">
+                                    <i class="bi bi-eraser"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <textarea asp-for="Input.Content" id="replyTextarea" class="form-control formatted-textarea" rows="10" 
+                                  placeholder="شارك أفكارك، اطرح أسئلة، أو ابدأ نقاشاً... يمكنك لصق الصور مباشرة (Ctrl+V)" style="font-size: 16px;"></textarea>
+                        <span asp-validation-for="Input.Content" class="text-danger small"></span>
+                        <small class="text-muted">يمكنك استخدام ما يصل إلى 5000 حرف.</small>
+                        <div id="pastedImagesPreview" class="pasted-images-preview"></div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Input.Image" class="form-label fw-semibold fs-5">📷 إرفاق صورة (اختياري)</label>
+                        <input asp-for="Input.Image" type="file" class="form-control form-control-lg" 
+                               accept="image/*" onchange="previewImage(event)" />
+                        <span asp-validation-for="Input.Image" class="text-danger small"></span>
+                        <small class="text-muted d-block mt-1">الصيغ المقبولة: JPG، PNG، GIF. الحد الأقصى: 5 ميجابايت</small>
+                        <div id="imagePreview" class="mt-3" style="display: none;">
+                            <img id="preview" src="" alt="معاينة" class="img-fluid rounded shadow-sm" style="max-height: 300px;" />
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-3">
+                        <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5">
+                            🚀 نشر الموضوع
+                        </button>
+                        <a asp-page="/Forum" class="btn btn-outline-secondary btn-lg rounded-pill px-5">
+                            إلغاء
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function previewImage(event) {
+            const preview = document.getElementById('preview');
+            const previewContainer = document.getElementById('imagePreview');
+            const file = event.target.files[0];
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            } else {
+                previewContainer.style.display = 'none';
+            }
+        }
+
+        // Text formatting functions
+        function formatText(format) {
+            const textarea = document.getElementById('replyTextarea');
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const selectedText = textarea.value.substring(start, end);
+            
+            if (selectedText) {
+                let formattedText = '';
+                switch(format) {
+                    case 'bold':
+                        formattedText = `**${selectedText}**`;
+                        break;
+                    case 'italic':
+                        formattedText = `*${selectedText}*`;
+                        break;
+                    case 'underline':
+                        formattedText = `__${selectedText}__`;
+                        break;
+                    case 'strikethrough':
+                        formattedText = `~~${selectedText}~~`;
+                        break;
+                }
+                
+                textarea.value = textarea.value.substring(0, start) + formattedText + textarea.value.substring(end);
+                textarea.focus();
+                textarea.setSelectionRange(start + formattedText.length, start + formattedText.length);
+            } else {
+                // Handle alignment without selection
+                if (format === 'alignRight') {
+                    textarea.style.textAlign = 'right';
+                } else if (format === 'alignCenter') {
+                    textarea.style.textAlign = 'center';
+                } else if (format === 'alignLeft') {
+                    textarea.style.textAlign = 'left';
+                }
+            }
+        }
+
+        function setFontFamily(font) {
+            if (font) {
+                document.getElementById('replyTextarea').style.fontFamily = font;
+            }
+        }
+
+        function setFontSize(size) {
+            if (size) {
+                document.getElementById('replyTextarea').style.fontSize = size;
+            }
+        }
+
+        function setTextColor(color) {
+            document.getElementById('replyTextarea').style.color = color;
+        }
+
+        function setBackgroundColor(color) {
+            document.getElementById('replyTextarea').style.backgroundColor = color;
+        }
+
+        function insertEmoji() {
+            const emojis = ['😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '😉', '😊', '😇', '🥰', '😍', '🤩', '😘', '😗', '😚', '😙', '😋', '😛', '😜', '🤪', '😝', '🤑', '🤗', '🤭', '🤔', '🤐', '🤨', '😐', '😑', '😶', '😏', '😒', '🙄', '😬', '🤥', '😌', '😔', '😪', '🤤', '😴', '😷', '🤒', '🤕', '🤢', '🤮', '🤧', '🥵', '🥶', '😶‍🌫️', '🥴', '😵', '🤯', '🤠', '🥳', '😎', '🤓', '🧐', '👍', '👎', '👌', '✌️', '🤞', '🤟', '🤘', '🤙', '👏', '🙌', '👐', '🤲', '🤝', '🙏', '✍️', '💪', '❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💔', '❣️', '💕', '💞', '💓', '💗', '💖', '💘', '💝', '✨', '⭐', '🌟', '💫', '🔥', '💯', '👑', '🎉', '🎊', '🎈', '🎁'];
+            const emoji = prompt('اختر رمز تعبيري:\n\n' + emojis.join(' ') + '\n\nأو اكتب رمزاً يدوياً:');
+            if (emoji) {
+                const textarea = document.getElementById('replyTextarea');
+                const start = textarea.selectionStart;
+                textarea.value = textarea.value.substring(0, start) + emoji + textarea.value.substring(start);
+                textarea.focus();
+            }
+        }
+
+        function insertLink() {
+            const textarea = document.getElementById('replyTextarea');
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const selectedText = textarea.value.substring(start, end);
+
+            const url = prompt('أدخل الرابط:');
+            if (url) {
+                const linkText = selectedText || prompt('أدخل نص الرابط:') || url;
+                const formattedLink = `[${linkText}](${url})`;
+                textarea.value = textarea.value.substring(0, start) + formattedLink + textarea.value.substring(end);
+                textarea.focus();
+            }
+        }
+
+        function clearFormatting() {
+            const textarea = document.getElementById('replyTextarea');
+            textarea.style.fontSize = '16px';
+            textarea.style.fontFamily = "'Segoe UI', 'Cairo', 'Tajawal', sans-serif";
+            textarea.style.color = '#000';
+            textarea.style.backgroundColor = '#fff';
+            textarea.style.textAlign = 'right';
+        }
+
+        // Image paste functionality
+        document.getElementById('replyTextarea').addEventListener('paste', async (e) => {
+            const items = e.clipboardData.items;
+            for (let item of items) {
+                if (item.type.indexOf('image') !== -1) {
+                    e.preventDefault();
+                    const blob = item.getAsFile();
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        const previewDiv = document.getElementById('pastedImagesPreview');
+                        const imgWrapper = document.createElement('div');
+                        imgWrapper.style.position = 'relative';
+                        imgWrapper.style.display = 'inline-block';
+
+                        const img = document.createElement('img');
+                        img.src = event.target.result;
+                        img.style.maxWidth = '200px';
+                        img.style.maxHeight = '200px';
+                        img.style.borderRadius = '8px';
+                        img.style.border = '2px solid var(--border-color)';
+
+                        const removeBtn = document.createElement('button');
+                        removeBtn.textContent = '×';
+                        removeBtn.className = 'btn btn-sm btn-danger';
+                        removeBtn.style.position = 'absolute';
+                        removeBtn.style.top = '5px';
+                        removeBtn.style.right = '5px';
+                        removeBtn.style.width = '25px';
+                        removeBtn.style.height = '25px';
+                        removeBtn.style.padding = '0';
+                        removeBtn.style.lineHeight = '1';
+                        removeBtn.onclick = () => imgWrapper.remove();
+
+                        imgWrapper.appendChild(img);
+                        imgWrapper.appendChild(removeBtn);
+                        previewDiv.appendChild(imgWrapper);
+
+                        // Insert reference in textarea
+                        const textarea = document.getElementById('replyTextarea');
+                        const imageText = '\n[صورة ملصقة]\n';
+                        textarea.value += imageText;
+                    };
+                    reader.readAsDataURL(blob);
+                }
+            }
+        });
+    </script>
+}

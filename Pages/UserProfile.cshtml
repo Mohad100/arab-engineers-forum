@@ -1,0 +1,280 @@
+@page
+@model UserProfileModel
+@{
+    ViewData["Title"] = $"{Model.ProfileUser?.Username}'s Profile";
+}
+
+<div class="container-fluid my-5" style="max-width: 1600px;">
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            @Model.ErrorMessage
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+        </div>
+        <a asp-page="/Index" class="btn btn-primary mt-3">← Back to Forum</a>
+    }
+    else if (Model.ProfileUser != null)
+    {
+        <div class="row">
+            <!-- Profile Header -->
+            <div class="col-lg-8">
+                <div class="modern-card mb-5">
+                    <div class="profile-header">
+                        <div class="profile-avatar-large">
+                            @Model.ProfileUser.Username.Substring(0, 1).ToUpper()
+                        </div>
+                        <div class="profile-info">
+                            <h1 class="fw-bold mb-2">@Model.ProfileUser.Username</h1>
+                            <p class="text-muted mb-3">
+                                <i class="bi bi-calendar-event me-2"></i>
+                                Member since @Model.ProfileUser.CreatedAt.ToString("MMMM yyyy")
+                            </p>
+                            
+                            <!-- Action Buttons -->
+                            <div class="profile-actions mb-4">
+                                @{
+                                    var currentUsername = User.FindFirst("UserName")?.Value ?? "";
+                                    bool isOwnProfile = currentUsername == Model.ProfileUser.Username;
+                                }
+                                
+                                @if (!isOwnProfile && User.Identity?.IsAuthenticated == true)
+                                {
+                                    <a asp-page="/SendMessage" asp-route-recipient="@Model.ProfileUser.Username" class="btn btn-primary btn-lg px-4 me-2">
+                                        <i class="bi bi-envelope me-2"></i>Send Message
+                                    </a>
+                                }
+                                
+                                <a asp-page="/Forum" class="btn btn-outline-secondary btn-lg px-4">
+                                    <i class="bi bi-arrow-left me-2"></i>Back to Forum
+                                </a>
+                            </div>
+
+                            <!-- Stats -->
+                            <div class="profile-stats">
+                                <div class="stat-box">
+                                    <div class="stat-number">@Model.ThreadCount</div>
+                                    <div class="stat-label">Threads Started</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-number">@Model.ReplyCount</div>
+                                    <div class="stat-label">Replies</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Threads Section -->
+                @if (Model.UserThreads.Count > 0)
+                {
+                    <div class="mt-5">
+                        <h2 class="fw-bold mb-4">📌 Recent Threads</h2>
+                        <div class="threads-list">
+                            @foreach (var thread in Model.UserThreads)
+                            {
+                                var category = ForumCategory.GetById(thread.CategoryId);
+                                <a asp-page="/Thread" asp-route-id="@thread.Id" class="thread-card-link">
+                                    <div class="modern-thread-card">
+                                        <div class="thread-main">
+                                            <div class="thread-category-badge">
+                                                <span class="badge-icon">@category?.Icon</span>
+                                                <span class="badge-text">@category?.Name</span>
+                                            </div>
+                                            <h5 class="thread-title-modern">@thread.Title</h5>
+                                            <div class="thread-meta">
+                                                <div class="thread-stats">
+                                                    <span class="stat-item">
+                                                        <i class="bi bi-clock"></i>
+                                                        @{
+                                                            var timeAgo = DateTime.Now - thread.CreatedAt;
+                                                            var timeText = timeAgo.TotalMinutes < 60 ? $"{(int)timeAgo.TotalMinutes}m ago" :
+                                                                          timeAgo.TotalHours < 24 ? $"{(int)timeAgo.TotalHours}h ago" :
+                                                                          $"{(int)timeAgo.TotalDays}d ago";
+                                                        }
+                                                        @timeText
+                                                    </span>
+                                                    <span class="stat-item">
+                                                        <i class="bi bi-chat-dots"></i>
+                                                        @thread.ReplyCount
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="thread-arrow">
+                                            <i class="bi bi-arrow-right"></i>
+                                        </div>
+                                    </div>
+                                </a>
+                            }
+                        </div>
+
+                        @if (Model.ThreadCount > 5)
+                        {
+                            <div class="text-center mt-4">
+                                <a asp-page="/Forum" class="btn btn-outline-gradient px-5">
+                                    View All Threads by @Model.ProfileUser.Username
+                                    <i class="bi bi-arrow-right ms-2"></i>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state-card">
+                        <div class="empty-icon">💭</div>
+                        <h4>No threads yet</h4>
+                        <p>@Model.ProfileUser.Username hasn't started any discussions yet</p>
+                    </div>
+                }
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- User Status Card -->
+                <div class="modern-card mb-4">
+                    <div class="card-title-alt mb-3">Member Status</div>
+                    @{
+                        var isAdmin = Model.ProfileUser.IsAdmin;
+                        var statusClass = isAdmin ? "admin" : "member";
+                        var statusIcon = isAdmin ? "👑" : "👤";
+                        var statusText = isAdmin ? "Administrator" : "Member";
+                    }
+                    <div class="status-badge @statusClass">
+                        <span class="status-icon">@statusIcon</span>
+                        <span class="status-text">@statusText</span>
+                    </div>
+                </div>
+
+                <!-- Quick Info Card -->
+                <div class="modern-card">
+                    <div class="card-title-alt mb-3">Quick Info</div>
+                    <div class="info-item">
+                        <span class="info-label"><i class="bi bi-person-badge me-2"></i>Username:</span>
+                        <span class="info-value">@Model.ProfileUser.Username</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label"><i class="bi bi-calendar-check me-2"></i>Joined:</span>
+                        <span class="info-value">@Model.ProfileUser.CreatedAt.ToString("MMMM dd, yyyy")</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label"><i class="bi bi-chat-dots me-2"></i>Total Posts:</span>
+                        <span class="info-value">@(Model.ThreadCount + Model.ReplyCount)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+.profile-header {
+    display: flex;
+    gap: 2rem;
+    padding: 1.5rem 0;
+}
+
+.profile-avatar-large {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: var(--primary-gradient);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.5rem;
+    font-weight: bold;
+    flex-shrink: 0;
+    box-shadow: 0 4px 20px var(--shadow-color);
+}
+
+.profile-info {
+    flex: 1;
+}
+
+.profile-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.profile-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.stat-box {
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--accent-blue);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.card-title-alt {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    border-bottom: 2px solid var(--primary-gradient);
+    padding-bottom: 0.75rem;
+    display: inline-block;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 999px;
+    font-weight: 600;
+    background: rgba(59, 130, 246, 0.1);
+    border: 2px solid var(--accent-blue);
+    color: var(--accent-blue);
+}
+
+.status-badge.admin {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
+.status-icon {
+    font-size: 1.25rem;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.info-value {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+</style>

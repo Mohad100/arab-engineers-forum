@@ -1,0 +1,123 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Forum Home";
+}
+
+<div class="container mt-4">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-primary mb-3">💬 Community Forum</h1>
+        <p class="lead text-muted">Connect, discuss, and share ideas across different topics</p>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <a asp-page="/CreateThread" class="btn btn-primary rounded-pill px-5 mt-3">✨ Create New Thread</a>
+        }
+        else
+        {
+            <div class="mt-3">
+                <a asp-page="/Login" class="btn btn-primary rounded-pill px-4 me-2">Login</a>
+                <a asp-page="/Register" class="btn btn-outline-primary rounded-pill px-4">Register</a>
+            </div>
+        }
+    </div>
+
+    @if (!string.IsNullOrEmpty(TempData["SuccessMessage"] as string))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row g-4 mb-5">
+        @foreach (var category in Fourm.Models.ForumCategory.AllCategories)
+        {
+            var threadCount = Model.CategoryThreadCounts.GetValueOrDefault(category.Id, 0);
+            var latestThread = Model.LatestThreadsByCategory.GetValueOrDefault(category.Id);
+            
+            <div class="col-md-6 col-lg-4">
+                <a asp-page="/Forum" asp-route-category="@category.Id" class="text-decoration-none">
+                    <div class="card h-100 border-0 shadow-sm category-card">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-start mb-3">
+                                <div class="display-4 me-3">@category.Icon</div>
+                                <div class="flex-grow-1">
+                                    <h4 class="card-title mb-2 fw-bold text-dark">@category.Name</h4>
+                                    <p class="text-muted small mb-0">@category.Description</p>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+                                <span class="badge bg-primary rounded-pill">
+                                    @threadCount @(threadCount == 1 ? "thread" : "threads")
+                                </span>
+                                @if (latestThread != null)
+                                {
+                                    <small class="text-muted">Latest: @latestThread.CreatedAt.ToString("MMM dd")</small>
+                                }
+                            </div>
+
+                            @if (latestThread != null)
+                            {
+                                <div class="mt-3 pt-3 border-top">
+                                    <small class="text-muted d-block mb-1">Latest thread:</small>
+                                    <small class="fw-semibold text-truncate d-block">@latestThread.Title</small>
+                                    <small class="text-muted">by @latestThread.AuthorUsername</small>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+
+    <div class="mt-5">
+        <h3 class="fw-bold mb-4">🔥 Recent Activity</h3>
+        @if (Model.RecentThreads.Count == 0)
+        {
+            <div class="card border-0 bg-light text-center p-5">
+                <div class="display-1 mb-3">📭</div>
+                <h5 class="mb-3">No threads yet!</h5>
+                <p class="text-muted">Be the first to start a conversation.</p>
+            </div>
+        }
+        else
+        {
+            <div class="list-group">
+                @foreach (var thread in Model.RecentThreads.Take(5))
+                {
+                    var category = ForumCategory.GetById(thread.CategoryId);
+                    <a asp-page="/Thread" asp-route-id="@thread.Id" class="list-group-item list-group-item-action p-4 mb-2 border-0 shadow-sm rounded-3">
+                        <div class="d-flex w-100 justify-content-between align-items-start">
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="badge bg-light text-dark me-2">@category?.Icon @category?.Name</span>
+                                    @if (thread.IsPinned)
+                                    {
+                                        <span class="badge bg-warning text-dark me-2">📌 Pinned</span>
+                                    }
+                                </div>
+                                <h6 class="mb-2 fw-bold">@thread.Title</h6>
+                                <small class="text-muted">
+                                    👤 <strong>@thread.AuthorUsername</strong> · 
+                                    🕒 @thread.CreatedAt.ToString("MMM dd, yyyy 'at' h:mm tt")
+                                </small>
+                            </div>
+                            <div class="text-end ms-3">
+                                <div class="badge bg-primary rounded-pill">💬 @thread.ReplyCount</div>
+                            </div>
+                        </div>
+                    </a>
+                }
+            </div>
+            
+            @if (Model.RecentThreads.Count > 5)
+            {
+                <div class="text-center mt-4">
+                    <a asp-page="/Forum" class="btn btn-outline-primary rounded-pill px-5">View All Threads →</a>
+                </div>
+            }
+        }
+    </div>
+</div>

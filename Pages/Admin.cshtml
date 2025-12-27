@@ -1,0 +1,253 @@
+@page
+@model AdminModel
+@{
+    ViewData["Title"] = "Admin Panel";
+}
+
+<div class="container-fluid my-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="fw-bold text-danger">🛡️ Admin Control Panel</h1>
+                <a asp-page="/Index" class="btn btn-outline-secondary">← Back to Forum</a>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Success!</strong> @Model.SuccessMessage
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Error!</strong> @Model.ErrorMessage
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <!-- Statistics -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card border-primary">
+                        <div class="card-body text-center">
+                            <h3 class="text-primary">@Model.TotalThreads</h3>
+                            <p class="text-muted mb-0">Total Threads</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card border-warning">
+                        <div class="card-body text-center">
+                            <h3 class="text-warning">@Model.ViolatedThreads</h3>
+                            <p class="text-muted mb-0">Violated Threads</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card border-danger">
+                        <div class="card-body text-center">
+                            <h3 class="text-danger">@Model.ViolatedReplies</h3>
+                            <p class="text-muted mb-0">Violated Replies</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card border-info">
+                        <div class="card-body text-center">
+                            <h3 class="text-info">@Model.TotalUsers</h3>
+                            <p class="text-muted mb-0">Total Users</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <ul class="nav nav-tabs mb-4" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="threads-tab" data-bs-toggle="tab" data-bs-target="#threads" type="button">
+                        📝 All Threads
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button">
+                        👥 Users
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <!-- Threads Tab -->
+                <div class="tab-pane fade show active" id="threads" role="tabpanel">
+                    @if (Model.Threads.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Thread</th>
+                                        <th>Author</th>
+                                        <th>Category</th>
+                                        <th>Created</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var thread in Model.Threads)
+                                    {
+                                        <tr class="@(thread.IsViolation ? "table-danger" : "")">
+                                            <td>
+                                                <a asp-page="/Thread" asp-route-id="@thread.Id" class="text-decoration-none fw-semibold">
+                                                    @thread.Title
+                                                </a>
+                                                @if (thread.IsViolation)
+                                                {
+                                                    <br />
+                                                    <small class="text-danger">
+                                                        ⚠️ <strong>Violation:</strong> @thread.ViolationReason
+                                                        <br />
+                                                        <em>By @thread.ViolatedByAdmin on @thread.ViolationDate?.ToString("MMM dd, yyyy")</em>
+                                                    </small>
+                                                }
+                                            </td>
+                                            <td>@thread.AuthorUsername</td>
+                                            <td>
+                                                @{
+                                                    var category = Model.Categories.FirstOrDefault(c => c.Id == thread.CategoryId);
+                                                }
+                                                @(category?.Icon ?? "") @(category?.Name ?? thread.CategoryId)
+                                            </td>
+                                            <td>
+                                                <small class="text-muted">@thread.CreatedAt.ToString("MMM dd, yyyy")</small>
+                                            </td>
+                                            <td>
+                                                @if (thread.IsViolation)
+                                                {
+                                                    <span class="badge bg-danger">Violated</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-success">Active</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!thread.IsViolation)
+                                                {
+                                                    <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#violationModal-@thread.Id">
+                                                        ⚠️ Mark Violation
+                                                    </button>
+                                                }
+                                                else
+                                                {
+                                                    <form method="post" asp-page-handler="RemoveViolation" class="d-inline">
+                                                        <input type="hidden" name="threadId" value="@thread.Id" />
+                                                        <button type="submit" class="btn btn-sm btn-success">
+                                                            ✓ Remove Violation
+                                                        </button>
+                                                    </form>
+                                                }
+                                                <form method="post" asp-page-handler="DeleteThread" class="d-inline" onsubmit="return confirm('Are you sure you want to permanently delete this thread?');">
+                                                    <input type="hidden" name="threadId" value="@thread.Id" />
+                                                    <button type="submit" class="btn btn-sm btn-danger">
+                                                        🗑️ Delete
+                                                    </button>
+                                                </form>
+
+                                                <!-- Violation Modal -->
+                                                <div class="modal fade" id="violationModal-@thread.Id" tabindex="-1">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">Mark Thread as Violation</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                            </div>
+                                                            <form method="post" asp-page-handler="MarkViolation">
+                                                                <div class="modal-body">
+                                                                    <input type="hidden" name="threadId" value="@thread.Id" />
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label fw-semibold">Violation Reason:</label>
+                                                                        <textarea name="violationReason" class="form-control" rows="3" required 
+                                                                                  placeholder="Explain why this thread violates community guidelines..."></textarea>
+                                                                    </div>
+                                                                    <div class="alert alert-warning">
+                                                                        <small>This reason will be visible to the thread author and all users.</small>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                                    <button type="submit" class="btn btn-warning">Mark as Violation</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> No threads found.
+                        </div>
+                    }
+                </div>
+
+                <!-- Users Tab -->
+                <div class="tab-pane fade" id="users" role="tabpanel">
+                    @if (Model.Users.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Joined</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var user in Model.Users)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <strong>@user.Username</strong>
+                                            </td>
+                                            <td>@user.Email</td>
+                                            <td>
+                                                @if (user.IsAdmin)
+                                                {
+                                                    <span class="badge bg-danger">Admin</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-secondary">User</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <small class="text-muted">@user.CreatedAt.ToString("MMM dd, yyyy")</small>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> No users found.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

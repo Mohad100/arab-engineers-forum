@@ -1,0 +1,17 @@
+@page
+@model LogoutModel
+@{
+    ViewData["Title"] = "Logout";
+}
+
+<div class="text-center mt-5">
+    <div class="display-1 mb-4">👋</div>
+    <h2 class="mb-3">Logging you out...</h2>
+    <p class="text-muted">Please wait while we redirect you.</p>
+</div>
+
+@section Scripts {
+    <script>
+        window.location.href = '/';
+    </script>
+}

@@ -1,0 +1,618 @@
+@page "{id:guid}"
+@model ThreadPageModel
+@{
+    ViewData["Title"] = Model.Thread?.Title ?? "Thread";
+    var categoryId = Model.Thread?.CategoryId ?? "discussion";
+}
+
+<style>
+    /* Force light theme */
+    html,
+    body {
+        background-color: 
+            @if (categoryId == "civil") {
+                @:#e8e5f5 !important;
+            } else if (categoryId == "electrical") {
+                @:#e0f2e9 !important;
+            } else if (categoryId == "mechanical") {
+                @:#e5e7eb !important;
+            } else if (categoryId == "software") {
+                @:#dcfce7 !important;
+            } else if (categoryId == "chemical") {
+                @:#fee2e2 !important;
+            } else if (categoryId == "architecture") {
+                @:#fef3c7 !important;
+            } else if (categoryId == "industrial") {
+                @:#dbeafe !important;
+            } else if (categoryId == "biomedical") {
+                @:#fce7f3 !important;
+            } else if (categoryId == "aerospace") {
+                @:#cffafe !important;
+            } else {
+                @:#f3f4f6 !important;
+            }
+        color: #1f2937 !important;
+    }
+    
+    body::before {
+        display: none;
+    }
+
+    /* Ensure all cards are white */
+    .card,
+    .thread-display-card,
+    .reply-card,
+    .card-body {
+        background: #ffffff !important;
+        border-color: #e5e7eb !important;
+    }
+
+    /* All text should be dark */
+    body,
+    .card,
+    .card *,
+    .thread-display-card,
+    .thread-display-card *,
+    .reply-card,
+    .reply-card *,
+    h1, h2, h3, h4, h5, h6,
+    p, span, div, label {
+        color: #1f2937 !important;
+    }
+
+    /* Muted/secondary text */
+    .text-muted,
+    .thread-meta-item,
+    small {
+        color: #6b7280 !important;
+    }
+
+    /* Links */
+    a:not(.btn) {
+        color: #2563eb !important;
+    }
+
+    /* Form inputs */
+    input,
+    textarea,
+    select {
+        background: #ffffff !important;
+        color: #1f2937 !important;
+        border-color: #d1d5db !important;
+    }
+
+    /* Buttons keep their original styling */
+    .btn {
+        color: inherit;
+    }
+</style>
+
+@if (Model.Thread == null)
+{
+    <div class="alert alert-warning mt-4">
+        <h4>الموضوع غير موجود</h4>
+        <p>قد يكون هذا الموضوع محذوفاً أو غير موجود.</p>
+        <a asp-page="/Forum" class="btn btn-primary rounded-pill">← العودة للمنتدى</a>
+    </div>
+}
+else
+{
+    <div class="container-fluid my-5" style="max-width: 1800px;">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-page="/Index">الرئيسية</a></li>
+                @if (Model.Thread != null)
+                {
+                    var category = ForumCategory.GetById(Model.Thread.CategoryId);
+                    if (category != null)
+                    {
+                        <li class="breadcrumb-item"><a asp-page="/Forum" asp-route-category="@category.Id">@category.Icon @category.Name</a></li>
+                    }
+                }
+                <li class="breadcrumb-item active" aria-current="page">@Model.Thread?.Title</li>
+            </ol>
+        </nav>
+
+        <!-- Thread Card -->
+        <div class="card shadow-sm border-0 mb-4 thread-display-card">
+            <!-- Thread Header with Stats -->
+            <div class="thread-header-section">
+                <div class="thread-header-top">
+                    <h1 class="thread-main-title mb-3">@Model.Thread?.Title</h1>
+                    <div class="thread-badges-actions">
+                        <div class="thread-badges">
+                            @if (Model.Thread?.IsPinned == true)
+                            {
+                                <span class="badge bg-warning text-dark me-2">📌 مثبت</span>
+                            }
+                            @if (Model.Thread?.IsLocked == true)
+                            {
+                                <span class="badge bg-secondary me-2">🔒 مغلق</span>
+                            }
+                        </div>
+                        <div class="thread-actions">
+                            @if (User.Identity?.Name == Model.Thread?.AuthorUsername)
+                            {
+                                <a asp-page="/EditThread" asp-route-id="@Model.Thread?.Id" class="btn btn-sm btn-outline-primary rounded-pill">
+                                    ✏️ تعديل
+                                </a>
+                            }
+                            @if (Model.IsAdmin)
+                            {
+                                <a asp-page="/Admin" class="btn btn-sm btn-warning rounded-pill">
+                                    🛡️ إدارة
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Thread Stats Bar -->
+                <div class="thread-stats-bar">
+                    <div class="stat-item">
+                        <i class="bi bi-eye"></i>
+                        <span class="stat-label">مشاهدات</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="bi bi-chat-dots"></i>
+                        <span class="stat-number">@Model.Thread?.ReplyCount</span>
+                        <span class="stat-label">ردود</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="bi bi-people"></i>
+                        <span class="stat-number">@(Model.Replies.Select(r => r.AuthorUsername).Distinct().Count() + 1)</span>
+                        <span class="stat-label">مشاركين</span>
+                    </div>
+                    <div class="stat-item stat-last-post">
+                        <i class="bi bi-clock"></i>
+                        <span class="stat-label">آخر رد بواسطة</span>
+                        @if (Model.Replies.Any())
+                        {
+                            var lastReply = Model.Replies.OrderByDescending(r => r.CreatedAt).First();
+                            <a asp-page="/UserProfile" asp-route-username="@lastReply.AuthorUsername" class="stat-username">@lastReply.AuthorUsername</a>
+                            <span class="stat-time">
+                                @{
+                                    var timeAgo = DateTime.Now - lastReply.CreatedAt;
+                                    var timeText = timeAgo.TotalMinutes < 60 ? $"منذ {(int)timeAgo.TotalMinutes} دقيقة" :
+                                                  timeAgo.TotalHours < 24 ? $"منذ {(int)timeAgo.TotalHours} ساعة" :
+                                                  $"منذ {(int)timeAgo.TotalDays} يوم";
+                                }
+                                @timeText
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="stat-label">لا توجد ردود</span>
+                        }
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card-body p-5">
+                <!-- Violation Warning -->
+                @if (Model.Thread?.IsViolation == true)
+                {
+                    <div class="alert alert-danger border-danger" role="alert">
+                        <h5 class="alert-heading">⚠️ مخالفة لقواعد المجتمع</h5>
+                        <p class="mb-0"><strong>السبب:</strong> @Model.Thread?.ViolationReason</p>
+                        <hr />
+                        <p class="mb-0 small">
+                            <em>تم الإبلاغ بواسطة @Model.Thread?.ViolatedByAdmin في @Model.Thread?.ViolationDate?.ToString("MMMM dd, yyyy")</em>
+                        </p>
+                    </div>
+                }
+                
+                <!-- Author Info -->
+                <div class="thread-author-info mb-4">
+                    <div class="author-avatar-large">@Model.Thread?.AuthorUsername?.Substring(0, 1).ToUpper()</div>
+                    <div class="author-details">
+                        <a asp-page="/UserProfile" asp-route-username="@Model.Thread?.AuthorUsername" 
+                           class="author-name-large">@Model.Thread?.AuthorUsername</a>
+                        <div class="author-meta">
+                            <span class="post-number">#1</span>
+                            <span class="post-separator">·</span>
+                            <span class="post-time">@Model.Thread?.CreatedAt.ToString("MMMM dd, yyyy 'في' h:mm tt")</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="thread-content mb-4" style="white-space: pre-wrap;">@Model.Thread?.Content</div>
+
+                @if (!string.IsNullOrEmpty(Model.Thread?.ImageUrl))
+                {
+                    <div class="thread-image mb-3">
+                        <img src="@Model.Thread?.ImageUrl" alt="Thread image" class="img-fluid rounded shadow-sm" style="max-width: 100%; max-height: 600px;" />
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Success Message -->
+        @if (!string.IsNullOrEmpty(TempData["SuccessMessage"] as string))
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <!-- Replies Section -->
+        <div class="replies-section mb-4">
+            <div class="replies-container">
+                @if (Model.Replies.Count == 0)
+                {
+                    <div class="replies-empty-state">
+                        <div class="empty-icon">💭</div>
+                        <p>لا توجد ردود بعد. كن أول من يشارك أفكاره!</p>
+                    </div>
+                }
+                else
+                {
+                    @foreach (var reply in Model.Replies)
+                    {
+                        <div class="reply-card" id="reply-@reply.Id">
+                            <!-- Violation Warning for Reply -->
+                            @if (reply.IsViolation)
+                            {
+                                <div class="reply-violation-warning">
+                                    <div class="violation-icon">⚠️</div>
+                                    <div>
+                                        <strong>مخالفة لقواعد المجتمع</strong>
+                                        <p class="mb-0">@reply.ViolationReason</p>
+                                        <small>تم الإبلاغ بواسطة @reply.ViolatedByAdmin في @reply.ViolationDate?.ToString("MMM dd, yyyy")</small>
+                                    </div>
+                                </div>
+                            }
+
+                            <div class="reply-layout">
+                                <div class="reply-sidebar">
+                                    <div class="reply-avatar">@reply.AuthorUsername.Substring(0, 1).ToUpper()</div>
+                                    <div class="reply-author-name">
+                                        <a asp-page="/UserProfile" asp-route-username="@reply.AuthorUsername" 
+                                           class="author-link">@reply.AuthorUsername</a>
+                                    </div>
+                                </div>
+                                
+                                <div class="reply-main-content">
+                                    <div class="reply-header-bar">
+                                        <div class="reply-meta">
+                                            <span class="reply-date">🕒 @reply.CreatedAt.ToString("MMM dd, yyyy 'في' h:mm tt")</span>
+                                            @if (reply.IsEdited && reply.EditedAt.HasValue)
+                                            {
+                                                <span class="reply-edited">· تم التعديل @reply.EditedAt.Value.ToString("MMM dd, h:mm tt")</span>
+                                            }
+                                        </div>
+                                        @if (User.Identity?.Name == reply.AuthorUsername)
+                                        {
+                                            <button type="button" class="reply-edit-btn" onclick="toggleEditReply('@reply.Id')">
+                                                <i class="bi bi-pencil"></i> تعديل
+                                            </button>
+                                        }
+                                    </div>
+                                    
+                                    <div class="reply-content-@reply.Id reply-text">@reply.Content</div>
+                                    
+                                    @if (!string.IsNullOrEmpty(reply.AttachmentUrl))
+                                    {
+                                        <div class="reply-attachment">
+                                            @if (reply.AttachmentUrl.EndsWith(".jpg") || reply.AttachmentUrl.EndsWith(".jpeg") || 
+                                                 reply.AttachmentUrl.EndsWith(".png") || reply.AttachmentUrl.EndsWith(".gif"))
+                                            {
+                                                <div class="attachment-image">
+                                                    <img src="@reply.AttachmentUrl" alt="Attachment" class="img-fluid rounded" />
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <a href="@reply.AttachmentUrl" class="attachment-link" download="@reply.AttachmentFileName">
+                                                    <i class="bi bi-paperclip"></i>
+                                                    <span>@reply.AttachmentFileName</span>
+                                                    <i class="bi bi-download"></i>
+                                                </a>
+                                            }
+                                        </div>
+                                    }
+                                    
+                                    <div class="reply-edit-form-@reply.Id" style="display: none;">
+                                        <form method="post" asp-page-handler="EditReply" asp-route-replyId="@reply.Id">
+                                            <textarea name="content" class="reply-edit-textarea" rows="5">@reply.Content</textarea>
+                                            <div class="reply-edit-actions">
+                                                <button type="submit" class="btn-save-reply"><i class="bi bi-check-lg"></i> حفظ</button>
+                                                <button type="button" class="btn-cancel-reply" onclick="toggleEditReply('@reply.Id')">إلغاء</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+
+        <!-- Reply Form -->
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            @if (Model.Thread?.IsLocked != true)
+            {
+                <div class="card shadow-sm border-0 mb-5">
+                    <div class="card-body p-4">
+                        <h4 class="mb-4 fw-bold">✍️ أضف رداً</h4>
+
+                        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                        {
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                @Model.ErrorMessage
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        }
+
+                        <form method="post" asp-page-handler="CreateReply" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <div class="text-editor-toolbar">
+                                    <div class="toolbar-group">
+                                        <button type="button" class="toolbar-btn" onclick="formatText('bold')" title="غامق">
+                                            <i class="bi bi-type-bold"></i>
+                                        </button>
+                                        <button type="button" class="toolbar-btn" onclick="formatText('italic')" title="مائل">
+                                            <i class="bi bi-type-italic"></i>
+                                        </button>
+                                        <button type="button" class="toolbar-btn" onclick="formatText('underline')" title="تحته خط">
+                                            <i class="bi bi-type-underline"></i>
+                                        </button>
+                                        <button type="button" class="toolbar-btn" onclick="formatText('strikethrough')" title="يتوسطه خط">
+                                            <i class="bi bi-type-strikethrough"></i>
+                                        </button>
+                                    </div>
+                                    <span class="toolbar-divider"></span>
+                                    <div class="toolbar-group">
+                                        <select class="toolbar-select" onchange="setFontFamily(this.value)">
+                                            <option value="">نوع الخط</option>
+                                            <option value="'Segoe UI', 'Cairo', 'Tajawal', sans-serif">الافتراضي</option>
+                                            <option value="'Arial', sans-serif">Arial</option>
+                                            <option value="'Times New Roman', serif">Times New Roman</option>
+                                            <option value="'Courier New', monospace">Courier New</option>
+                                            <option value="'Georgia', serif">Georgia</option>
+                                            <option value="'Verdana', sans-serif">Verdana</option>
+                                        </select>
+                                        <select class="toolbar-select" onchange="setFontSize(this.value)">
+                                            <option value="">حجم الخط</option>
+                                            <option value="12px">12</option>
+                                            <option value="14px">14</option>
+                                            <option value="16px" selected>16</option>
+                                            <option value="18px">18</option>
+                                            <option value="20px">20</option>
+                                            <option value="22px">22</option>
+                                            <option value="24px">24</option>
+                                            <option value="28px">28</option>
+                                            <option value="32px">32</option>
+                                        </select>
+                                    </div>
+                                    <span class="toolbar-divider"></span>
+                                    <div class="toolbar-group">
+                                        <input type="color" class="toolbar-color" onchange="setTextColor(this.value)" title="لون النص" value="#000000">
+                                        <input type="color" class="toolbar-color" onchange="setBackgroundColor(this.value)" title="لون الخلفية" value="#ffffff">
+                                    </div>
+                                    <span class="toolbar-divider"></span>
+                                    <div class="toolbar-group">
+                                        <button type="button" class="toolbar-btn" onclick="formatText('alignRight')" title="محاذاة لليمين">
+                                            <i class="bi bi-text-right"></i>
+                                        </button>
+                                        <button type="button" class="toolbar-btn" onclick="formatText('alignCenter')" title="محاذاة للوسط">
+                                            <i class="bi bi-text-center"></i>
+                                        </button>
+                                        <button type="button" class="toolbar-btn" onclick="formatText('alignLeft')" title="محاذاة لليسار">
+                                            <i class="bi bi-text-left"></i>
+                                        </button>
+                                    </div>
+                                    <span class="toolbar-divider"></span>
+                                    <div class="toolbar-group">
+                                        <button type="button" class="toolbar-btn" onclick="insertEmoji()" title="إدراج رمز تعبيري">
+                                            <i class="bi bi-emoji-smile"></i>
+                                        </button>
+                                        <button type="button" class="toolbar-btn" onclick="insertLink()" title="إدراج رابط">
+                                            <i class="bi bi-link-45deg"></i>
+                                        </button>
+                                        <button type="button" class="toolbar-btn" onclick="clearFormatting()" title="مسح التنسيق">
+                                            <i class="bi bi-eraser"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <textarea asp-for="ReplyInput.Content" id="replyTextarea" class="form-control formatted-textarea" rows="5" 
+                                          placeholder="شارك أفكارك... يمكنك لصق الصور مباشرة (Ctrl+V)" style="font-size: 16px;"></textarea>
+                                <span asp-validation-for="ReplyInput.Content" class="text-danger small"></span>
+                                <div id="pastedImagesPreview" class="pasted-images-preview"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label asp-for="ReplyInput.Attachment" class="form-label">📎 إرفاق ملف (اختياري)</label>
+                                <input asp-for="ReplyInput.Attachment" type="file" class="form-control" 
+                                       accept="image/*,.pdf,.doc,.docx,.zip,.rar" />
+                                <small class="text-muted">الملفات المقبولة: صور، PDF، Word، ZIP. الحد الأقصى: 5 ميجابايت</small>
+                            </div>
+                            <button type="submit" class="btn btn-primary rounded-pill px-4">
+                                🚀 نشر الرد
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-secondary text-center">
+                    <strong>🔒 هذا الموضوع مغلق.</strong> لا يمكن إضافة ردود جديدة.
+                </div>
+            }
+        }
+        else
+        {
+            <div class="card shadow-sm border-0 mb-5">
+                <div class="card-body p-5 text-center">
+                    <p class="mb-3">تريد الانضمام للمحادثة؟</p>
+                    <a asp-page="/Login" class="btn btn-primary rounded-pill px-5">
+                        سجل الدخول للرد
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function toggleEditReply(replyId) {
+            const contentDiv = document.querySelector('.reply-content-' + replyId);
+            const editForm = document.querySelector('.reply-edit-form-' + replyId);
+            
+            if (editForm.style.display === 'none') {
+                contentDiv.style.display = 'none';
+                editForm.style.display = 'block';
+            } else {
+                contentDiv.style.display = 'block';
+                editForm.style.display = 'none';
+            }
+        }
+
+        // Text formatting functions
+        function formatText(format) {
+            const textarea = document.getElementById('replyTextarea');
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const selectedText = textarea.value.substring(start, end);
+            
+            if (selectedText) {
+                let formattedText = '';
+                switch(format) {
+                    case 'bold':
+                        formattedText = `**${selectedText}**`;
+                        break;
+                    case 'italic':
+                        formattedText = `*${selectedText}*`;
+                        break;
+                    case 'underline':
+                        formattedText = `__${selectedText}__`;
+                        break;
+                    case 'strikethrough':
+                        formattedText = `~~${selectedText}~~`;
+                        break;
+                }
+                
+                textarea.value = textarea.value.substring(0, start) + formattedText + textarea.value.substring(end);
+                textarea.focus();
+                textarea.setSelectionRange(start + formattedText.length, start + formattedText.length);
+            } else {
+                // Handle alignment without selection
+                if (format === 'alignRight') {
+                    textarea.style.textAlign = 'right';
+                } else if (format === 'alignCenter') {
+                    textarea.style.textAlign = 'center';
+                } else if (format === 'alignLeft') {
+                    textarea.style.textAlign = 'left';
+                }
+            }
+        }
+
+        function setFontFamily(font) {
+            if (font) {
+                document.getElementById('replyTextarea').style.fontFamily = font;
+            }
+        }
+
+        function setFontSize(size) {
+            if (size) {
+                document.getElementById('replyTextarea').style.fontSize = size;
+            }
+        }
+
+        function setTextColor(color) {
+            document.getElementById('replyTextarea').style.color = color;
+        }
+
+        function setBackgroundColor(color) {
+            document.getElementById('replyTextarea').style.backgroundColor = color;
+        }
+
+        function insertEmoji() {
+            const emojis = ['😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '😉', '😊', '😇', '🥰', '😍', '🤩', '😘', '😗', '😚', '😙', '😋', '😛', '😜', '🤪', '😝', '🤑', '🤗', '🤭', '🤔', '🤐', '🤨', '😐', '😑', '😶', '😏', '😒', '🙄', '😬', '🤥', '😌', '😔', '😪', '🤤', '😴', '😷', '🤒', '🤕', '🤢', '🤮', '🤧', '🥵', '🥶', '😶‍🌫️', '🥴', '😵', '🤯', '🤠', '🥳', '😎', '🤓', '🧐', '👍', '👎', '👌', '✌️', '🤞', '🤟', '🤘', '🤙', '👏', '🙌', '👐', '🤲', '🤝', '🙏', '✍️', '💪', '❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💔', '❣️', '💕', '💞', '💓', '💗', '💖', '💘', '💝', '✨', '⭐', '🌟', '💫', '🔥', '💯', '👑', '🎉', '🎊', '🎈', '🎁'];
+            const emoji = prompt('اختر رمز تعبيري:\n\n' + emojis.join(' ') + '\n\nأو اكتب رمزاً يدوياً:');
+            if (emoji) {
+                const textarea = document.getElementById('replyTextarea');
+                const start = textarea.selectionStart;
+                textarea.value = textarea.value.substring(0, start) + emoji + textarea.value.substring(start);
+                textarea.focus();
+            }
+        }
+
+        function insertLink() {
+            const textarea = document.getElementById('replyTextarea');
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const selectedText = textarea.value.substring(start, end);
+
+            const url = prompt('أدخل الرابط:');
+            if (url) {
+                const linkText = selectedText || prompt('أدخل نص الرابط:') || url;
+                const formattedLink = `[${linkText}](${url})`;
+                textarea.value = textarea.value.substring(0, start) + formattedLink + textarea.value.substring(end);
+                textarea.focus();
+            }
+        }
+
+        function clearFormatting() {
+            const textarea = document.getElementById('replyTextarea');
+            textarea.style.fontSize = '16px';
+            textarea.style.fontFamily = "'Segoe UI', 'Cairo', 'Tajawal', sans-serif";
+            textarea.style.color = '#000';
+            textarea.style.backgroundColor = '#fff';
+            textarea.style.textAlign = 'right';
+        }
+
+        // Image paste functionality
+        document.getElementById('replyTextarea').addEventListener('paste', async (e) => {
+            const items = e.clipboardData.items;
+            for (let item of items) {
+                if (item.type.indexOf('image') !== -1) {
+                    e.preventDefault();
+                    const blob = item.getAsFile();
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        const previewDiv = document.getElementById('pastedImagesPreview');
+                        const imgWrapper = document.createElement('div');
+                        imgWrapper.style.position = 'relative';
+                        imgWrapper.style.display = 'inline-block';
+
+                        const img = document.createElement('img');
+                        img.src = event.target.result;
+                        img.style.maxWidth = '200px';
+                        img.style.maxHeight = '200px';
+                        img.style.borderRadius = '8px';
+                        img.style.border = '2px solid var(--border-color)';
+
+                        const removeBtn = document.createElement('button');
+                        removeBtn.textContent = '×';
+                        removeBtn.className = 'btn btn-sm btn-danger';
+                        removeBtn.style.position = 'absolute';
+                        removeBtn.style.top = '5px';
+                        removeBtn.style.right = '5px';
+                        removeBtn.style.width = '25px';
+                        removeBtn.style.height = '25px';
+                        removeBtn.style.padding = '0';
+                        removeBtn.style.lineHeight = '1';
+                        removeBtn.onclick = () => imgWrapper.remove();
+
+                        imgWrapper.appendChild(img);
+                        imgWrapper.appendChild(removeBtn);
+                        previewDiv.appendChild(imgWrapper);
+
+                        // Insert reference in textarea
+                        const textarea = document.getElementById('replyTextarea');
+                        const imageText = '\n[صورة ملصقة]\n';
+                        textarea.value += imageText;
+                    };
+                    reader.readAsDataURL(blob);
+                }
+            }
+        });
+    </script>
+}

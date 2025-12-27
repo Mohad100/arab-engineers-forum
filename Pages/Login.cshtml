@@ -1,0 +1,72 @@
+@page
+@model LoginPageModel
+@{
+    ViewData["Title"] = "تسجيل الدخول";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm border-0 mt-5">
+            <div class="card-body p-5">
+                <h2 class="text-center mb-4 fw-bold text-primary">مرحباً بعودتك! 🔑</h2>
+                <p class="text-center text-muted mb-4">
+                    سجل الدخول للوصول إلى المنتدى ومشاركة أفكارك!
+                </p>
+
+                @if (!string.IsNullOrEmpty(TempData["SuccessMessage"] as string))
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        @TempData["SuccessMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Oops!</strong> @Model.ErrorMessage
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                <form method="post">
+                    <div class="mb-3">
+                        <label asp-for="Input.Username" class="form-label fw-semibold">اسم المستخدم</label>
+                        <input asp-for="Input.Username" class="form-control form-control-lg rounded-pill" placeholder="اسم المستخدم الخاص بك" autofocus />
+                        <span asp-validation-for="Input.Username" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Input.Password" class="form-label fw-semibold">كلمة المرور</label>
+                        <input asp-for="Input.Password" class="form-control form-control-lg rounded-pill" placeholder="كلمة المرور الخاصة بك" />
+                        <span asp-validation-for="Input.Password" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4 form-check">
+                        <input asp-for="Input.RememberMe" class="form-check-input" />
+                        <label asp-for="Input.RememberMe" class="form-check-label">
+                            ابقني مسجلاً
+                        </label>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg rounded-pill">
+                            دخول! 🚀
+                        </button>
+                    </div>
+                </form>
+
+                <hr class="my-4" />
+
+                <p class="text-center text-muted mb-0">
+                    ليس لديك حساب؟ 
+                    <a asp-page="/Register" class="text-decoration-none fw-semibold">انضم إلينا!</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,204 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Forum Home";
+}
+
+<!-- Hero Section -->
+<div class="hero-section">
+    <div class="container">
+        <div class="row align-items-center py-5">
+            <div class="col-lg-6">
+                <div class="hero-content">
+                    <h1 class="hero-title mb-4">
+                        <span class="gradient-text">Welcome to</span><br/>
+                        Tech Community Forum
+                    </h1>
+                    <p class="hero-subtitle mb-4">
+                        Join thousands of developers, designers, and tech enthusiasts discussing the latest trends, 
+                        sharing knowledge, and building amazing things together.
+                    </p>
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <a asp-page="/CreateThread" class="btn btn-gradient btn-lg px-5 py-3">
+                            <i class="bi bi-plus-circle me-2"></i>Start a Discussion
+                        </a>
+                    }
+                    else
+                    {
+                        <div class="hero-buttons">
+                            <a asp-page="/Register" class="btn btn-gradient btn-lg px-5 py-3 me-3">
+                                Join Now
+                            </a>
+                            <a asp-page="/Login" class="btn btn-outline-light btn-lg px-5 py-3">
+                                Sign In
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="hero-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-number">@Model.RecentThreads.Select(t => t.AuthorUsername).Distinct().Count()+</div>
+                        <div class="stat-label">Active Members</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💬</div>
+                        <div class="stat-number">@Model.RecentThreads.Count</div>
+                        <div class="stat-label">Discussions</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🔥</div>
+                        <div class="stat-number">@Model.RecentThreads.Sum(t => t.ReplyCount)</div>
+                        <div class="stat-label">Total Replies</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    @if (!string.IsNullOrEmpty(TempData["SuccessMessage"] as string))
+    {
+        <div class="alert alert-success alert-dismissible fade show modern-alert" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Categories Section -->
+    <div class="section-header mb-5">
+        <h2 class="section-title">Explore Categories</h2>
+        <p class="section-subtitle">Find the perfect place for your discussion</p>
+    </div>
+
+    <div class="row g-4 mb-5">
+        @foreach (var category in Fourm.Models.ForumCategory.AllCategories)
+        {
+            var threadCount = Model.CategoryThreadCounts.GetValueOrDefault(category.Id, 0);
+            var latestThread = Model.LatestThreadsByCategory.GetValueOrDefault(category.Id);
+            
+            <div class="col-md-6 col-xl-4">
+                <a asp-page="/Forum" asp-route-category="@category.Id" class="category-link">
+                    <div class="modern-category-card">
+                        <div class="category-header">
+                            <div class="category-icon-wrapper">
+                                <span class="category-icon-emoji">@category.Icon</span>
+                            </div>
+                            <div class="category-badge">@threadCount</div>
+                        </div>
+                        <div class="category-body">
+                            <h5 class="category-name">@category.Name</h5>
+                            <p class="category-desc">@category.Description</p>
+                        </div>
+                        @if (latestThread != null)
+                        {
+                            <div class="category-footer">
+                                <div class="latest-info">
+                                    <span class="latest-label">Latest:</span>
+                                    <span class="latest-title">@latestThread.Title.Substring(0, Math.Min(30, latestThread.Title.Length))@(latestThread.Title.Length > 30 ? "..." : "")</span>
+                                </div>
+                                <div class="latest-meta">
+                                    <span class="latest-author">@@@latestThread.AuthorUsername</span>
+                                    <span class="latest-time">@latestThread.CreatedAt.ToString("MMM dd")</span>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="category-footer">
+                                <div class="empty-state">
+                                    <span>Be the first to post!</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+
+    <!-- Recent Activity Section -->
+    <div class="section-header mb-5 mt-5">
+        <h2 class="section-title">Latest Discussions</h2>
+        <p class="section-subtitle">Stay updated with recent conversations</p>
+    </div>
+
+    @if (Model.RecentThreads.Count == 0)
+    {
+        <div class="empty-state-card">
+            <div class="empty-icon">�</div>
+            <h4>No discussions yet</h4>
+            <p>Be the first to start a conversation in our community!</p>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a asp-page="/CreateThread" class="btn btn-gradient px-4 py-2 mt-3">Create First Thread</a>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="threads-list">
+            @foreach (var thread in Model.RecentThreads.Take(5))
+            {
+                var category = ForumCategory.GetById(thread.CategoryId);
+                <a asp-page="/Thread" asp-route-id="@thread.Id" class="thread-card-link">
+                    <div class="modern-thread-card">
+                        <div class="thread-main">
+                            <div class="thread-category-badge">
+                                <span class="badge-icon">@category?.Icon</span>
+                                <span class="badge-text">@category?.Name</span>
+                            </div>
+                            @if (thread.IsPinned)
+                            {
+                                <span class="pinned-badge">
+                                    <i class="bi bi-pin-angle-fill"></i> Pinned
+                                </span>
+                            }
+                            <h5 class="thread-title-modern">@thread.Title</h5>
+                            <div class="thread-meta">
+                                <div class="author-info">
+                                    <div class="avatar-circle">@thread.AuthorUsername.Substring(0, 1).ToUpper()</div>
+                                    <span class="author-name">@thread.AuthorUsername</span>
+                                </div>
+                                <div class="thread-stats">
+                                    <span class="stat-item">
+                                        <i class="bi bi-clock"></i>
+                                        @{
+                                            var timeAgo = DateTime.Now - thread.CreatedAt;
+                                            var timeText = timeAgo.TotalMinutes < 60 ? $"{(int)timeAgo.TotalMinutes}m ago" :
+                                                          timeAgo.TotalHours < 24 ? $"{(int)timeAgo.TotalHours}h ago" :
+                                                          $"{(int)timeAgo.TotalDays}d ago";
+                                        }
+                                        @timeText
+                                    </span>
+                                    <span class="stat-item">
+                                        <i class="bi bi-chat-dots"></i>
+                                        @thread.ReplyCount
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="thread-arrow">
+                            <i class="bi bi-arrow-right"></i>
+                        </div>
+                    </div>
+                </a>
+            }
+        </div>
+        
+        @if (Model.RecentThreads.Count > 5)
+        {
+            <div class="text-center mt-5">
+                <a asp-page="/Forum" class="btn btn-outline-gradient btn-lg px-5">
+                    View All Discussions
+                    <i class="bi bi-arrow-right ms-2"></i>
+                </a>
+            </div>
+        }
+    }
+</div>

@@ -1,0 +1,196 @@
+@page
+@model ForumModel
+@{
+    ViewData["Title"] = "المنتدى";
+    var categoryId = Model.CurrentCategory?.Id ?? "discussion";
+}
+
+<style>
+    body {
+        background-color: @(categoryId == "civil" ? "#e8e5f5" : 
+                          categoryId == "electrical" ? "#e0f2e9" : 
+                          categoryId == "mechanical" ? "#e5e7eb" : 
+                          categoryId == "software" ? "#dcfce7" : 
+                          categoryId == "chemical" ? "#fee2e2" : 
+                          categoryId == "architecture" ? "#fef3c7" : 
+                          categoryId == "industrial" ? "#dbeafe" : 
+                          categoryId == "biomedical" ? "#fce7f3" : 
+                          categoryId == "aerospace" ? "#cffafe" : 
+                          categoryId == "discussion" ? "#f3f4f6" : 
+                          "#f3f4f6") !important;
+    }
+    
+    body::before {
+        display: none;
+    }
+</style>
+        body {
+            background-color: #3d4451 !important;
+        }
+        body::before {
+            display: none;
+        }
+        </text>
+    }
+</style>
+
+<div class="forum-page">
+    <!-- Header Section -->
+    <div class="forum-header">
+        <div class="forum-header-content">
+            @if (Model.CurrentCategory != null)
+            {
+                <div class="category-header">
+                    <div class="category-icon-large">@Model.CurrentCategory.Icon</div>
+                    <div>
+                        <h1 class="forum-title">@Model.CurrentCategory.Name</h1>
+                        <p class="forum-description">@Model.CurrentCategory.Description</p>
+                        <a asp-page="/Index" class="back-link">← العودة لجميع الأقسام</a>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div>
+                    <h1 class="forum-title">💬 جميع المواضيع</h1>
+                    <p class="forum-description">تصفح جميع المناقشات في المنتدى</p>
+                </div>
+            }
+        </div>
+        
+        <div class="forum-header-action">
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                @if (Model.CurrentCategory != null)
+                {
+                    <a asp-page="/CreateThread" asp-route-category="@Model.CurrentCategory.Id" class="btn btn-primary btn-lg">
+                        <i class="bi bi-plus-circle me-2"></i>موضوع جديد
+                    </a>
+                }
+                else
+                {
+                    <a asp-page="/CreateThread" class="btn btn-primary btn-lg">
+                        <i class="bi bi-plus-circle me-2"></i>موضوع جديد
+                    </a>
+                }
+            }
+            else
+            {
+                <a asp-page="/Login" class="btn btn-outline-primary btn-lg">
+                    سجل للنشر
+                </a>
+            }
+        </div>
+    </div>
+
+    <!-- Threads Section -->
+    @if (Model.Threads.Count == 0)
+    {
+        <div class="empty-state">
+            <div class="empty-state-icon">📭</div>
+            <h2 class="empty-state-title">لا توجد مواضيع بعد</h2>
+            <p class="empty-state-text">كن أول من يبدأ محادثة في هذا القسم.</p>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                @if (Model.CurrentCategory != null)
+                {
+                    <a asp-page="/CreateThread" asp-route-category="@Model.CurrentCategory.Id" class="btn btn-primary btn-lg mt-4">
+                        إنشاء أول موضوع
+                    </a>
+                }
+                else
+                {
+                    <a asp-page="/CreateThread" class="btn btn-primary btn-lg mt-4">
+                        إنشاء أول موضوع
+                    </a>
+                }
+            }
+        </div>
+    }
+    else
+    {
+        <div class="threads-section">
+            <div class="threads-list">
+                @foreach (var thread in Model.Threads)
+                {
+                    var category = ForumCategory.GetById(thread.CategoryId);
+                    <div class="thread-item">
+                        <div class="thread-item-left">
+                            <div class="thread-avatar">
+                                @thread.AuthorUsername.Substring(0, 1).ToUpper()
+                            </div>
+                        </div>
+                        
+                        <div class="thread-item-content">
+                            <div class="thread-item-header">
+                                <h3 class="thread-item-title">
+                                    <a asp-page="/Thread" asp-route-id="@thread.Id" class="thread-link">
+                                        @thread.Title
+                                    </a>
+                                </h3>
+                                <div class="thread-item-badges">
+                                    @if (Model.CurrentCategory == null && category != null)
+                                    {
+                                        <span class="thread-badge category-badge">@category.Icon @category.Name</span>
+                                    }
+                                    @if (thread.IsPinned)
+                                    {
+                                        <span class="thread-badge pinned-badge">📌 مثبت</span>
+                                    }
+                                    @if (thread.IsLocked)
+                                    {
+                                        <span class="thread-badge locked-badge">🔒 مغلق</span>
+                                    }
+                                </div>
+                            </div>
+                            
+                            <p class="thread-item-excerpt">
+                                @(thread.Content.Length > 200 ? thread.Content.Substring(0, 200) + "..." : thread.Content)
+                            </p>
+                            
+                            <div class="thread-item-footer">
+                                <span class="thread-meta">
+                                    بواسطة <a asp-page="/UserProfile" asp-route-username="@thread.AuthorUsername" class="author-link">@thread.AuthorUsername</a>
+                                </span>
+                                <span class="thread-meta separator">•</span>
+                                <span class="thread-meta">@thread.CreatedAt.ToString("MMM dd, yyyy")</span>
+                            </div>
+                        </div>
+                        
+                        <div class="thread-item-right">
+                            <div class="thread-stats-box">
+                                <div class="stat-item">
+                                    <div class="stat-value">@thread.ReplyCount</div>
+                                    <div class="stat-label">ردود</div>
+                                </div>
+                                @if (thread.ReplyCount > 0)
+                                {
+                                    <div class="stat-item">
+                                        <div class="stat-value">
+                                            @{
+                                                var minutesAgo = (int)(DateTime.UtcNow - thread.LastReplyAt).TotalMinutes;
+                                                if (minutesAgo < 60)
+                                                {
+                                                    @minutesAgo@("m");
+                                                }
+                                                else if ((int)(DateTime.UtcNow - thread.LastReplyAt).TotalHours < 24)
+                                                {
+                                                    @((int)(DateTime.UtcNow - thread.LastReplyAt).TotalHours)@("h");
+                                                }
+                                                else
+                                                {
+                                                    @((int)(DateTime.UtcNow - thread.LastReplyAt).TotalDays)@("d");
+                                                }
+                                            }
+                                        </div>
+                                        <div class="stat-label">آخر رد</div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>

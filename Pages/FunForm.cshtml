@@ -1,0 +1,105 @@
+@page
+@model FunFormPageModel
+@{
+    ViewData["Title"] = "Fun Form";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0 mt-4 mb-5">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <h1 class="display-5 fw-bold text-primary mb-3">The Fun Zone! 🎨</h1>
+                    <p class="lead text-muted">
+                        This page is just for laughs — answer honestly or hilariously, it's all for fun!
+                    </p>
+                    <div class="alert alert-info border-0 shadow-sm">
+                        <small>
+                            <strong>Remember:</strong> This is purely for entertainment. 
+                            Share your personality, favourite things, and let your creativity flow! 🌈
+                        </small>
+                    </div>
+                </div>
+
+                <form method="post">
+                    <div class="mb-4">
+                        <label asp-for="Input.Nickname" class="form-label fw-semibold fs-5">
+                            What should we call you? 😊
+                        </label>
+                        <input asp-for="Input.Nickname" class="form-control form-control-lg rounded-pill" 
+                               placeholder="Your name or a fun nickname" />
+                        <span asp-validation-for="Input.Nickname" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Input.FavoriteEntertainment" class="form-label fw-semibold fs-5">
+                            Favourite Movie / Song / Game 🎬🎵🎮
+                        </label>
+                        <input asp-for="Input.FavoriteEntertainment" class="form-control form-control-lg rounded-pill" 
+                               placeholder="What's your all-time favourite?" />
+                        <span asp-validation-for="Input.FavoriteEntertainment" class="text-danger small"></span>
+                        <small class="text-muted">Pick just one, or tell us all three!</small>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Input.MoodToday" class="form-label fw-semibold fs-5">
+                            How are you feeling today? 😄
+                        </label>
+                        <select asp-for="Input.MoodToday" class="form-select form-select-lg rounded-pill">
+                            <option value="">-- Pick your vibe --</option>
+                            <option value="😊 Happy & Cheerful">😊 Happy & Cheerful</option>
+                            <option value="😎 Cool & Chill">😎 Cool & Chill</option>
+                            <option value="🤩 Excited & Energetic">🤩 Excited & Energetic</option>
+                            <option value="😌 Peaceful & Relaxed">😌 Peaceful & Relaxed</option>
+                            <option value="🤔 Thoughtful & Curious">🤔 Thoughtful & Curious</option>
+                            <option value="😴 Sleepy & Tired">😴 Sleepy & Tired</option>
+                            <option value="🥳 Party Mode On!">🥳 Party Mode On!</option>
+                            <option value="😅 A Little Stressed">😅 A Little Stressed</option>
+                        </select>
+                        <span asp-validation-for="Input.MoodToday" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Input.FunFact" class="form-label fw-semibold fs-5">
+                            Share a Fun Fact About You 🌟
+                        </label>
+                        <textarea asp-for="Input.FunFact" class="form-control" rows="4" 
+                                  placeholder="Tell us something interesting, weird, or wonderful about yourself!"></textarea>
+                        <span asp-validation-for="Input.FunFact" class="text-danger small"></span>
+                        <small class="text-muted">The quirkier, the better!</small>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Input.WouldYouRather" class="form-label fw-semibold fs-5">
+                            Would You Rather...? 🤷
+                        </label>
+                        <select asp-for="Input.WouldYouRather" class="form-select form-select-lg rounded-pill">
+                            <option value="">-- Make your choice --</option>
+                            <option value="Travel to the past">Travel to the past 🕰️</option>
+                            <option value="Travel to the future">Travel to the future 🚀</option>
+                            <option value="Have the ability to fly">Have the ability to fly 🦅</option>
+                            <option value="Have the ability to be invisible">Have the ability to be invisible 👻</option>
+                            <option value="Live in the mountains">Live in the mountains 🏔️</option>
+                            <option value="Live by the beach">Live by the beach 🏖️</option>
+                            <option value="Always eat pizza">Always eat pizza 🍕</option>
+                            <option value="Always eat ice cream">Always eat ice cream 🍦</option>
+                            <option value="Be a superhero">Be a superhero 🦸</option>
+                            <option value="Be a wizard">Be a wizard 🧙</option>
+                        </select>
+                        <span asp-validation-for="Input.WouldYouRather" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-grid gap-2 mt-5">
+                        <button type="submit" class="btn btn-primary btn-lg rounded-pill py-3">
+                            Count Me In! 🎉
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

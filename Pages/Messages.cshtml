@@ -1,0 +1,159 @@
+@page
+@model Fourm.Pages.MessagesModel
+@{
+    ViewData["Title"] = "Private Messages";
+}
+
+<div class="container-fluid" style="max-width: 1600px; margin: 50px auto;">
+    <div class="card">
+        <div class="card-header">
+            <h2>📬 My Messages</h2>
+        </div>
+        <div class="card-body">
+            @if (!string.IsNullOrEmpty(TempData["SuccessMessage"] as string))
+            {
+                <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+            }
+
+            <!-- Tabs for Inbox and Sent -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="inbox-tab" data-bs-toggle="tab" data-bs-target="#inbox" type="button" role="tab">
+                        📥 Inbox
+                        @if (Model.UnreadCount > 0)
+                        {
+                            <span class="badge bg-danger">@Model.UnreadCount</span>
+                        }
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="sent-tab" data-bs-toggle="tab" data-bs-target="#sent" type="button" role="tab">
+                        📤 Sent
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content mt-3">
+                <!-- Inbox Tab -->
+                <div class="tab-pane fade show active" id="inbox" role="tabpanel">
+                    @if (!Model.InboxMessages.Any())
+                    {
+                        <div class="alert alert-info">
+                            <i class="bi bi-inbox"></i> No messages in your inbox.
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="list-group">
+                            @foreach (var message in Model.InboxMessages)
+                            {
+                                <div class="list-group-item @(message.IsRead ? "" : "list-group-item-primary")">
+                                    <div class="d-flex w-100 justify-content-between align-items-start">
+                                        <div class="flex-grow-1">
+                                            <h5 class="mb-1">
+                                                @if (!message.IsRead)
+                                                {
+                                                    <span class="badge bg-danger me-2">NEW</span>
+                                                }
+                                                @message.Subject
+                                            </h5>
+                                            <p class="mb-1 text-muted">
+                                                <strong>From:</strong> 
+                                                <a asp-page="/UserProfile" asp-route-username="@message.SenderUsername" class="text-decoration-none">
+                                                    @message.SenderUsername
+                                                </a>
+                                            </p>
+                                            <p class="mb-2">@message.Content</p>
+                                            <small class="text-muted">
+                                                <i class="bi bi-clock"></i> @message.SentAt.ToString("MMM dd, yyyy 'at' hh:mm tt")
+                                            </small>
+                                        </div>
+                                        <div class="ms-3">
+                                            <form method="post" asp-page-handler="MarkAsRead" class="d-inline">
+                                                <input type="hidden" name="messageId" value="@message.Id" />
+                                                @if (!message.IsRead)
+                                                {
+                                                    <button type="submit" class="btn btn-sm btn-outline-primary mb-1" title="Mark as read">
+                                                        <i class="bi bi-check2"></i>
+                                                    </button>
+                                                }
+                                            </form>
+                                            <form method="post" asp-page-handler="Delete" class="d-inline">
+                                                <input type="hidden" name="messageId" value="@message.Id" />
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete" onclick="return confirm('Delete this message?')">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                            <a asp-page="/SendMessage" asp-route-recipient="@message.SenderUsername" class="btn btn-sm btn-outline-success mt-1" title="Reply">
+                                                <i class="bi bi-reply"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+
+                <!-- Sent Tab -->
+                <div class="tab-pane fade" id="sent" role="tabpanel">
+                    @if (!Model.SentMessages.Any())
+                    {
+                        <div class="alert alert-info">
+                            <i class="bi bi-send"></i> You haven't sent any messages yet.
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="list-group">
+                            @foreach (var message in Model.SentMessages)
+                            {
+                                <div class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between align-items-start">
+                                        <div class="flex-grow-1">
+                                            <h5 class="mb-1">
+                                                @message.Subject
+                                                @if (message.IsRead)
+                                                {
+                                                    <span class="badge bg-success ms-2">Read</span>
+                                                }
+                                            </h5>
+                                            <p class="mb-1 text-muted">
+                                                <strong>To:</strong> 
+                                                <a asp-page="/UserProfile" asp-route-username="@message.RecipientUsername" class="text-decoration-none">
+                                                    @message.RecipientUsername
+                                                </a>
+                                            </p>
+                                            <p class="mb-2">@message.Content</p>
+                                            <small class="text-muted">
+                                                <i class="bi bi-clock"></i> @message.SentAt.ToString("MMM dd, yyyy 'at' hh:mm tt")
+                                                @if (message.ReadAt.HasValue)
+                                                {
+                                                    <span class="ms-2">
+                                                        <i class="bi bi-check2-all"></i> Read @message.ReadAt.Value.ToString("MMM dd 'at' hh:mm tt")
+                                                    </span>
+                                                }
+                                            </small>
+                                        </div>
+                                        <div class="ms-3">
+                                            <form method="post" asp-page-handler="Delete" class="d-inline">
+                                                <input type="hidden" name="messageId" value="@message.Id" />
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete" onclick="return confirm('Delete this message?')">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-3">
+        <a asp-page="/Forum" class="btn btn-secondary">Back to Forum</a>
+    </div>
+</div>
