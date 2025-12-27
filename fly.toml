@@ -1,15 +1,12 @@
-# fly.toml app configuration file
-# See https://fly.io/docs/reference/configuration/ for information
+# fly.toml app configuration file generated for arab-engineers-forum on 2025-12-27T17:40:51Z
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
 
 app = 'arab-engineers-forum'
-primary_region = 'ams'
+primary_region = 'fra'
 
 [build]
-
-[env]
-  ASPNETCORE_URLS = "http://0.0.0.0:8080"
-  ASPNETCORE_ENVIRONMENT = "Production"
-  ASPNETCORE_FORWARDEDHEADERS_ENABLED = "true"
 
 [http_service]
   internal_port = 8080
@@ -20,6 +17,7 @@ primary_region = 'ams'
   processes = ['app']
 
 [[vm]]
-  memory = '512mb'
+  memory = '1gb'
   cpu_kind = 'shared'
   cpus = 1
+  memory_mb = 1024
