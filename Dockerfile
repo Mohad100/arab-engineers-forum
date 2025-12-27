@@ -14,9 +14,9 @@ RUN dotnet publish -c Release -o /app
 
 # final stage/image
 FROM mcr.microsoft.com/dotnet/aspnet:${DOTNET_SDK_VERSION}
-ENV ASPNETCORE_URLS http://+:8080
-ENV ASPNETCORE_ENVIRONMENT Production
-EXPOSE 8080
+ENV ASPNETCORE_URLS=http://0.0.0.0:10000
+ENV ASPNETCORE_ENVIRONMENT=Production
+EXPOSE 10000
 WORKDIR /app
 COPY --from=build /app .
 ENTRYPOINT [ "dotnet", "Fourm.dll" ]
