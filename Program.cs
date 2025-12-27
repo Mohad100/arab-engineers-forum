@@ -18,6 +18,11 @@ if (string.IsNullOrWhiteSpace(connectionString))
     connectionString = "Host=localhost;Port=5433;Database=ForumDb;Username=postgres";
 }
 
+// Log connection string (without password) for debugging
+var logger = LoggerFactory.Create(config => config.AddConsole()).CreateLogger<Program>();
+logger.LogInformation($"Connection string source: {(Environment.GetEnvironmentVariable("DATABASE_URL") != null ? "DATABASE_URL env variable" : "appsettings")}");
+logger.LogInformation($"Connection string (masked): {connectionString.Substring(0, Math.Min(50, connectionString.Length))}...");
+
 // Add PostgreSQL DbContext
 builder.Services.AddDbContext<ForumDbContext>(options =>
     options.UseNpgsql(connectionString));
@@ -58,13 +63,18 @@ using (var scope = app.Services.CreateScope())
 {
     try
     {
+        var scopeLogger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        scopeLogger.LogInformation("Starting database migration...");
+        
         var dbContext = scope.ServiceProvider.GetRequiredService<ForumDbContext>();
         dbContext.Database.Migrate();
+        
+        scopeLogger.LogInformation("Database migration completed successfully!");
     }
     catch (Exception ex)
     {
-        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred while migrating the database.");
+        var scopeLogger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        scopeLogger.LogError(ex, "An error occurred while migrating the database. Full error: {ErrorMessage}", ex.ToString());
         // Don't crash the app if migration fails - let it try to connect later
     }
 }
