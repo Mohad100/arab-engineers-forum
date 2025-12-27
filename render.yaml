@@ -24,3 +24,4 @@ databases:
     user: forumuser
     region: frankfurt
     plan: free
+    ipAllowList: []

@@ -8,9 +8,15 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container
 builder.Services.AddRazorPages();
 
-// Get connection string from environment variable (Fly.io) or appsettings
+// Get connection string from environment variable (Render/Fly.io) or appsettings
 var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL") 
     ?? builder.Configuration.GetConnectionString("DefaultConnection");
+
+// If connection string is empty, use a default for development
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    connectionString = "Host=localhost;Port=5433;Database=ForumDb;Username=postgres";
+}
 
 // Add PostgreSQL DbContext
 builder.Services.AddDbContext<ForumDbContext>(options =>
@@ -50,8 +56,17 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 // Apply migrations and create database
 using (var scope = app.Services.CreateScope())
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<ForumDbContext>();
-    dbContext.Database.Migrate();
+    try
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<ForumDbContext>();
+        dbContext.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while migrating the database.");
+        // Don't crash the app if migration fails - let it try to connect later
+    }
 }
 
 // Configure the HTTP request pipeline
