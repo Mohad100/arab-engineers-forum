@@ -3,30 +3,34 @@ using Microsoft.EntityFrameworkCore;
 using Fourm.Services;
 using Fourm.Data;
 
-var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container
-builder.Services.AddRazorPages();
-
-// Get connection string from environment variable (Render/Fly.io) or appsettings
-var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL") 
-    ?? builder.Configuration.GetConnectionString("DefaultConnection");
-
-// If connection string is empty, use a default for development
-if (string.IsNullOrWhiteSpace(connectionString))
+try
 {
-    connectionString = "Host=localhost;Port=5433;Database=ForumDb;Username=postgres";
-}
+    Console.WriteLine("=== APPLICATION STARTING ===");
+    
+    var builder = WebApplication.CreateBuilder(args);
 
-// Log connection string for debugging (using Console to ensure it shows up)
-Console.WriteLine($"=== STARTUP INFO ===");
-Console.WriteLine($"Connection string source: {(Environment.GetEnvironmentVariable("DATABASE_URL") != null ? "DATABASE_URL env variable" : "appsettings")}");
-Console.WriteLine($"Connection string present: {!string.IsNullOrWhiteSpace(connectionString)}");
-Console.WriteLine($"Environment: {builder.Environment.EnvironmentName}");
+    // Add services to the container
+    builder.Services.AddRazorPages();
 
-// Add PostgreSQL DbContext
-builder.Services.AddDbContext<ForumDbContext>(options =>
-    options.UseNpgsql(connectionString));
+    // Get connection string from environment variable (Render/Fly.io) or appsettings
+    var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL") 
+        ?? builder.Configuration.GetConnectionString("DefaultConnection");
+
+    // If connection string is empty, use a default for development
+    if (string.IsNullOrWhiteSpace(connectionString))
+    {
+        connectionString = "Host=localhost;Port=5433;Database=ForumDb;Username=postgres";
+    }
+
+    // Log connection string for debugging (using Console to ensure it shows up)
+    Console.WriteLine($"=== STARTUP INFO ===");
+    Console.WriteLine($"Connection string source: {(Environment.GetEnvironmentVariable("DATABASE_URL") != null ? "DATABASE_URL env variable" : "appsettings")}");
+    Console.WriteLine($"Connection string present: {!string.IsNullOrWhiteSpace(connectionString)}");
+    Console.WriteLine($"Environment: {builder.Environment.EnvironmentName}");
+
+    // Add PostgreSQL DbContext
+    builder.Services.AddDbContext<ForumDbContext>(options =>
+        options.UseNpgsql(connectionString));
 
 // Add session support for simple authentication
 builder.Services.AddSession(options =>
@@ -128,4 +132,20 @@ app.UseAuthorization();
 
 app.MapRazorPages();
 
+Console.WriteLine("=== APPLICATION STARTED SUCCESSFULLY ===");
 app.Run();
+}
+catch (Exception ex)
+{
+    Console.WriteLine("=== FATAL ERROR DURING STARTUP ===");
+    Console.WriteLine($"Exception Type: {ex.GetType().FullName}");
+    Console.WriteLine($"Message: {ex.Message}");
+    Console.WriteLine($"Stack Trace:\n{ex.StackTrace}");
+    if (ex.InnerException != null)
+    {
+        Console.WriteLine($"\nInner Exception: {ex.InnerException.GetType().FullName}");
+        Console.WriteLine($"Inner Message: {ex.InnerException.Message}");
+        Console.WriteLine($"Inner Stack Trace:\n{ex.InnerException.StackTrace}");
+    }
+    throw;
+}
