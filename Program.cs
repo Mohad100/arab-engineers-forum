@@ -7,7 +7,7 @@ try
 {
     Console.WriteLine("=== APPLICATION STARTING ===");
     
-    var builder = WebApplication.CreateBuilder(antml:parameter>
+    var builder = WebApplication.CreateBuilder(args);
 
     // Add services to the container
     builder.Services.AddRazorPages();
