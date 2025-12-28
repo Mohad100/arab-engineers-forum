@@ -38,8 +38,9 @@ public class SetupAdminModel : PageModel
             return Page();
         }
 
-        // Verify password
-        if (user.Password != Password) // In production, use proper password hashing
+        // Verify password using ValidateUserAsync
+        var validatedUser = await _userService.ValidateUserAsync(Username, Password);
+        if (validatedUser == null)
         {
             ErrorMessage = "كلمة المرور غير صحيحة";
             return Page();

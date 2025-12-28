@@ -12,4 +12,5 @@ public interface IUserService
     Task<bool> UserExistsAsync(string username);
     Task<User?> GetUserByUsernameAsync(string username);
     Task<List<User>> GetAllUsersAsync();
+    Task<bool> UpdateUserAsync(User user);
 }
