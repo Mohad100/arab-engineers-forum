@@ -7,26 +7,50 @@ try
 {
     Console.WriteLine("=== APPLICATION STARTING ===");
     
-    var builder = WebApplication.CreateBuilder(args);
+    var builder = WebApplication.CreateBuilder(antml:parameter>
 
     // Add services to the container
     builder.Services.AddRazorPages();
 
     // Get connection string from environment variable (Render/Fly.io) or appsettings
-    var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL") 
-        ?? builder.Configuration.GetConnectionString("DefaultConnection");
+    var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+    string connectionString;
 
-    // If connection string is empty, use a default for development
-    if (string.IsNullOrWhiteSpace(connectionString))
+    // Render provides DATABASE_URL in postgres:// format, need to convert
+    if (!string.IsNullOrWhiteSpace(databaseUrl))
     {
-        connectionString = "Host=localhost;Port=5433;Database=ForumDb;Username=postgres";
+        Console.WriteLine($"DATABASE_URL found, length: {databaseUrl.Length}");
+        
+        // Check if it's in postgres:// format (Render style)
+        if (databaseUrl.StartsWith("postgres://"))
+        {
+            Console.WriteLine("Converting postgres:// URL to Npgsql format...");
+            
+            // Parse postgres://user:password@host:port/database
+            var uri = new Uri(databaseUrl.Replace("postgres://", "postgresql://"));
+            connectionString = $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')};Username={uri.UserInfo.Split(':')[0]};Password={uri.UserInfo.Split(':')[1]};SSL Mode=Require;Trust Server Certificate=true";
+            
+            Console.WriteLine($"Converted connection string: Host={uri.Host}, Port={uri.Port}, Database={uri.AbsolutePath.TrimStart('/')}");
+        }
+        else
+        {
+            // Already in correct format
+            connectionString = databaseUrl;
+            Console.WriteLine("Using DATABASE_URL as-is (already in Npgsql format)");
+        }
+    }
+    else
+    {
+        // Fallback to appsettings or default
+        connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+            ?? "Host=localhost;Port=5433;Database=ForumDb;Username=postgres";
+        Console.WriteLine("Using appsettings/default connection string");
     }
 
-    // Log connection string for debugging (using Console to ensure it shows up)
+    // Log connection string for debugging
     Console.WriteLine($"=== STARTUP INFO ===");
-    Console.WriteLine($"Connection string source: {(Environment.GetEnvironmentVariable("DATABASE_URL") != null ? "DATABASE_URL env variable" : "appsettings")}");
-    Console.WriteLine($"Connection string present: {!string.IsNullOrWhiteSpace(connectionString)}");
     Console.WriteLine($"Environment: {builder.Environment.EnvironmentName}");
+    Console.WriteLine($"Connection string present: {!string.IsNullOrWhiteSpace(connectionString)}");
 
     // Add PostgreSQL DbContext
     builder.Services.AddDbContext<ForumDbContext>(options =>
