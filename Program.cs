@@ -14,40 +14,75 @@ try
 
     // Get connection string from environment variable (Render/Fly.io) or appsettings
     var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
-    string connectionString;
+    string connectionString = null;
 
+    Console.WriteLine($"=== DATABASE CONNECTION INFO ===");
+    Console.WriteLine($"DATABASE_URL present: {databaseUrl != null}");
+    Console.WriteLine($"DATABASE_URL empty: {string.IsNullOrWhiteSpace(databaseUrl)}");
+    
     // Render provides DATABASE_URL in postgres:// format, need to convert
     if (!string.IsNullOrWhiteSpace(databaseUrl))
     {
         Console.WriteLine($"DATABASE_URL found, length: {databaseUrl.Length}");
         
-        // Check if it's in postgres:// format (Render style)
-        if (databaseUrl.StartsWith("postgres://"))
+        try
         {
-            Console.WriteLine("Converting postgres:// URL to Npgsql format...");
-            
-            // Parse postgres://user:password@host:port/database
-            var uri = new Uri(databaseUrl.Replace("postgres://", "postgresql://"));
-            connectionString = $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')};Username={uri.UserInfo.Split(':')[0]};Password={uri.UserInfo.Split(':')[1]};SSL Mode=Require;Trust Server Certificate=true";
-            
-            Console.WriteLine($"Converted connection string: Host={uri.Host}, Port={uri.Port}, Database={uri.AbsolutePath.TrimStart('/')}");
+            // Check if it's in postgres:// format (Render style)
+            if (databaseUrl.StartsWith("postgres://") || databaseUrl.StartsWith("postgresql://"))
+            {
+                Console.WriteLine("Converting postgres:// URL to Npgsql format...");
+                
+                // Parse postgres://user:password@host:port/database
+                var uri = new Uri(databaseUrl.Replace("postgres://", "postgresql://"));
+                
+                var userInfo = uri.UserInfo.Split(':');
+                var username = userInfo.Length > 0 ? userInfo[0] : "";
+                var password = userInfo.Length > 1 ? userInfo[1] : "";
+                
+                connectionString = $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')};Username={username};Password={password};SSL Mode=Require;Trust Server Certificate=true";
+                
+                Console.WriteLine($"Converted: Host={uri.Host}, Port={uri.Port}, Database={uri.AbsolutePath.TrimStart('/')}, Username={username}");
+            }
+            else
+            {
+                // Already in correct format
+                connectionString = databaseUrl;
+                Console.WriteLine("Using DATABASE_URL as-is (already in Npgsql format)");
+            }
         }
-        else
+        catch (Exception ex)
         {
-            // Already in correct format
-            connectionString = databaseUrl;
-            Console.WriteLine("Using DATABASE_URL as-is (already in Npgsql format)");
+            Console.WriteLine($"ERROR parsing DATABASE_URL: {ex.Message}");
+            Console.WriteLine("Falling back to appsettings connection string");
+            connectionString = null;
         }
     }
     else
     {
-        // Fallback to appsettings or default
-        connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-            ?? "Host=localhost;Port=5433;Database=ForumDb;Username=postgres";
-        Console.WriteLine("Using appsettings/default connection string");
+        Console.WriteLine("DATABASE_URL not found or empty");
+    }
+    
+    // Fallback to appsettings or default if connectionString is still null/empty
+    if (string.IsNullOrWhiteSpace(connectionString))
+    {
+        connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+        Console.WriteLine($"Using appsettings connection: {connectionString != null}");
+        
+        if (string.IsNullOrWhiteSpace(connectionString))
+        {
+            connectionString = "Host=localhost;Port=5433;Database=ForumDb;Username=postgres";
+            Console.WriteLine("Using default localhost connection string");
+        }
     }
 
-    // Log connection string for debugging
+    // Final validation
+    if (string.IsNullOrWhiteSpace(connectionString))
+    {
+        throw new InvalidOperationException("No valid database connection string found!");
+    }
+
+    Console.WriteLine($"Final connection string valid: {!string.IsNullOrWhiteSpace(connectionString)}");
+    Console.WriteLine($"=== END DATABASE INFO ===");
     Console.WriteLine($"=== STARTUP INFO ===");
     Console.WriteLine($"Environment: {builder.Environment.EnvironmentName}");
     Console.WriteLine($"Connection string present: {!string.IsNullOrWhiteSpace(connectionString)}");
