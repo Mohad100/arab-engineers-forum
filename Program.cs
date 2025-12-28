@@ -39,9 +39,13 @@ try
                 var username = userInfo.Length > 0 ? userInfo[0] : "";
                 var password = userInfo.Length > 1 ? userInfo[1] : "";
                 
-                connectionString = $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')};Username={username};Password={password};SSL Mode=Require;Trust Server Certificate=true";
+                // Use default PostgreSQL port 5432 if not specified
+                var port = uri.Port > 0 ? uri.Port : 5432;
+                var database = uri.AbsolutePath.TrimStart('/');
                 
-                Console.WriteLine($"Converted: Host={uri.Host}, Port={uri.Port}, Database={uri.AbsolutePath.TrimStart('/')}, Username={username}");
+                connectionString = $"Host={uri.Host};Port={port};Database={database};Username={username};Password={password};SSL Mode=Require;Trust Server Certificate=true";
+                
+                Console.WriteLine($"Converted: Host={uri.Host}, Port={port}, Database={database}, Username={username}");
             }
             else
             {
