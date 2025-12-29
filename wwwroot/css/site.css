@@ -1210,6 +1210,12 @@ body::before {
     color: #856404 !important;
 }
 
+[data-theme="dark"] .alert-info {
+    background-color: #cff4fc !important;
+    border-color: #0dcaf0 !important;
+    color: #055160 !important;
+}
+
 [data-theme="dark"] .alert-success {
     background-color: rgba(34, 197, 94, 0.15);
     border-color: #22c55e;
