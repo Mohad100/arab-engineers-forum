@@ -1,0 +1,82 @@
+/* LTR Overrides for English Version */
+
+/* Reset text alignment to left for LTR */
+body[dir="ltr"] {
+    text-align: left;
+}
+
+/* Fix forum header flexbox */
+[dir="ltr"] .forum-header {
+    flex-direction: row;
+}
+
+[dir="ltr"] .forum-header-content {
+    text-align: left;
+    justify-content: flex-start;
+}
+
+/* Fix category header alignment */
+[dir="ltr"] .category-header {
+    text-align: left;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+[dir="ltr"] .category-icon-large {
+    margin-right: 1.5rem;
+    margin-left: 0;
+}
+
+/* Fix back link alignment */
+[dir="ltr"] .back-link {
+    text-align: left;
+}
+
+/* Fix thread meta alignment */
+[dir="ltr"] .thread-meta,
+[dir="ltr"] .thread-item-footer {
+    text-align: left;
+}
+
+/* Fix author link positioning */
+[dir="ltr"] .author-link {
+    margin-right: 0.25rem;
+    margin-left: 0;
+}
+
+/* Fix empty state text alignment */
+[dir="ltr"] .empty-state {
+    text-align: center;
+}
+
+/* Fix stat labels */
+[dir="ltr"] .stat-label {
+    text-align: center;
+}
+
+/* Fix latest thread info */
+[dir="ltr"] .latest-thread-info {
+    text-align: left;
+}
+
+/* Fix section headers */
+[dir="ltr"] .section-header {
+    text-align: center;
+}
+
+/* Fix alerts */
+[dir="ltr"] .alert {
+    text-align: left;
+}
+
+/* Fix form labels */
+[dir="ltr"] .form-label {
+    text-align: left;
+}
+
+/* Fix card headers */
+[dir="ltr"] .card-header {
+    text-align: left;
+}

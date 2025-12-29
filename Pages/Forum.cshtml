@@ -1,7 +1,7 @@
 @page
 @model ForumModel
 @{
-    ViewData["Title"] = "المنتدى";
+    ViewData["Title"] = "Forum";
     var categoryId = Model.CurrentCategory?.Id ?? "discussion";
 }
 
@@ -16,15 +16,15 @@
                     <div>
                         <h1 class="forum-title">@Model.CurrentCategory.Name</h1>
                         <p class="forum-description">@Model.CurrentCategory.Description</p>
-                        <a asp-page="/Index" class="back-link">← العودة لجميع الأقسام</a>
+                        <a asp-page="/Index" class="back-link">← Back to All Categories</a>
                     </div>
                 </div>
             }
             else
             {
                 <div>
-                    <h1 class="forum-title">💬 جميع المواضيع</h1>
-                    <p class="forum-description">تصفح جميع المناقشات في المنتدى</p>
+                    <h1 class="forum-title">💬 All Topics</h1>
+                    <p class="forum-description">Browse all discussions in the forum</p>
                 </div>
             }
         </div>
@@ -35,20 +35,20 @@
                 @if (Model.CurrentCategory != null)
                 {
                     <a asp-page="/CreateThread" asp-route-category="@Model.CurrentCategory.Id" class="btn btn-primary btn-lg">
-                        <i class="bi bi-plus-circle me-2"></i>موضوع جديد
+                        <i class="bi bi-plus-circle me-2"></i>New Topic
                     </a>
                 }
                 else
                 {
                     <a asp-page="/CreateThread" class="btn btn-primary btn-lg">
-                        <i class="bi bi-plus-circle me-2"></i>موضوع جديد
+                        <i class="bi bi-plus-circle me-2"></i>New Topic
                     </a>
                 }
             }
             else
             {
                 <a asp-page="/Login" class="btn btn-outline-primary btn-lg">
-                    سجل للنشر
+                    Login to Post
                 </a>
             }
         </div>
@@ -59,20 +59,20 @@
     {
         <div class="empty-state">
             <div class="empty-state-icon">📭</div>
-            <h2 class="empty-state-title">لا توجد مواضيع بعد</h2>
-            <p class="empty-state-text">كن أول من يبدأ محادثة في هذا القسم.</p>
+            <h2 class="empty-state-title">No Topics Yet</h2>
+            <p class="empty-state-text">Be the first to start a conversation in this section.</p>
             @if (User.Identity?.IsAuthenticated == true)
             {
                 @if (Model.CurrentCategory != null)
                 {
                     <a asp-page="/CreateThread" asp-route-category="@Model.CurrentCategory.Id" class="btn btn-primary btn-lg mt-4">
-                        إنشاء أول موضوع
+                        Create First Topic
                     </a>
                 }
                 else
                 {
                     <a asp-page="/CreateThread" class="btn btn-primary btn-lg mt-4">
-                        إنشاء أول موضوع
+                        Create First Topic
                     </a>
                 }
             }
@@ -81,83 +81,111 @@
     else
     {
         <div class="threads-section">
-            <div class="threads-list">
+            <div class="threads-grid">
                 @foreach (var thread in Model.Threads)
                 {
                     var category = ForumCategory.GetById(thread.CategoryId);
-                    <div class="thread-item">
-                        <div class="thread-item-left">
-                            <div class="thread-avatar">
-                                @thread.AuthorUsername.Substring(0, 1).ToUpper()
-                            </div>
-                        </div>
-                        
-                        <div class="thread-item-content">
-                            <div class="thread-item-header">
-                                <h3 class="thread-item-title">
-                                    <a asp-page="/Thread" asp-route-id="@thread.Id" class="thread-link">
-                                        @thread.Title
+                    <div class="thread-card @(thread.IsPinned ? "pinned" : "") @(thread.IsLocked ? "locked" : "")">
+                        <div class="thread-card-header">
+                            <div class="thread-author-info">
+                                <div class="thread-avatar-lg">
+                                    @thread.AuthorUsername.Substring(0, 1).ToUpper()
+                                </div>
+                                <div class="thread-author-details">
+                                    <a asp-page="/UserProfile" asp-route-username="@thread.AuthorUsername" class="thread-author-name">
+                                        @thread.AuthorUsername
                                     </a>
-                                </h3>
-                                <div class="thread-item-badges">
-                                    @if (Model.CurrentCategory == null && category != null)
-                                    {
-                                        <span class="thread-badge category-badge">@category.Icon @category.Name</span>
-                                    }
-                                    @if (thread.IsPinned)
-                                    {
-                                        <span class="thread-badge pinned-badge">📌 مثبت</span>
-                                    }
-                                    @if (thread.IsLocked)
-                                    {
-                                        <span class="thread-badge locked-badge">🔒 مغلق</span>
-                                    }
+                                    <span class="thread-posted-time">
+                                        @{
+                                            var minutesAgo = (int)(DateTime.UtcNow - thread.CreatedAt).TotalMinutes;
+                                            if (minutesAgo < 1)
+                                            {
+                                                <text>now</text>
+                                            }
+                                            else if (minutesAgo < 60)
+                                            {
+                                                @minutesAgo <text>m ago</text>
+                                            }
+                                            else if ((int)(DateTime.UtcNow - thread.CreatedAt).TotalHours < 24)
+                                            {
+                                                @((int)(DateTime.UtcNow - thread.CreatedAt).TotalHours) <text>h ago</text>
+                                            }
+                                            else if ((int)(DateTime.UtcNow - thread.CreatedAt).TotalDays < 7)
+                                            {
+                                                @((int)(DateTime.UtcNow - thread.CreatedAt).TotalDays) <text>d ago</text>
+                                            }
+                                            else
+                                            {
+                                                @thread.CreatedAt.ToString("MMM dd, yyyy")
+                                            }
+                                        }
+                                    </span>
                                 </div>
                             </div>
-                            
-                            <p class="thread-item-excerpt">
-                                @(thread.Content.Length > 200 ? thread.Content.Substring(0, 200) + "..." : thread.Content)
-                            </p>
-                            
-                            <div class="thread-item-footer">
-                                <span class="thread-meta">
-                                    بواسطة <a asp-page="/UserProfile" asp-route-username="@thread.AuthorUsername" class="author-link">@thread.AuthorUsername</a>
-                                </span>
-                                <span class="thread-meta separator">•</span>
-                                <span class="thread-meta">@thread.CreatedAt.ToString("MMM dd, yyyy")</span>
+                            <div class="thread-badges">
+                                @if (Model.CurrentCategory == null && category != null)
+                                {
+                                    <span class="badge-category">@category.Icon @category.Name</span>
+                                }
+                                @if (thread.IsPinned)
+                                {
+                                    <span class="badge-pinned">📌 Pinned</span>
+                                }
+                                @if (thread.IsLocked)
+                                {
+                                    <span class="badge-locked">🔒 Locked</span>
+                                }
                             </div>
                         </div>
                         
-                        <div class="thread-item-right">
-                            <div class="thread-stats-box">
-                                <div class="stat-item">
-                                    <div class="stat-value">@thread.ReplyCount</div>
-                                    <div class="stat-label">ردود</div>
+                        <div class="thread-card-body">
+                            <h3 class="thread-card-title">
+                                <a asp-page="/Thread" asp-route-id="@thread.Id" class="thread-title-link">
+                                    @thread.Title
+                                </a>
+                            </h3>
+                            <p class="thread-card-excerpt">
+                                @(thread.Content.Length > 180 ? thread.Content.Substring(0, 180) + "..." : thread.Content)
+                            </p>
+                        </div>
+                        
+                        <div class="thread-card-footer">
+                            <div class="thread-stats">
+                                <div class="stat-group">
+                                    <i class="bi bi-chat-dots"></i>
+                                    <span>@thread.ReplyCount replies</span>
                                 </div>
                                 @if (thread.ReplyCount > 0)
                                 {
-                                    <div class="stat-item">
-                                        <div class="stat-value">
+                                    <div class="stat-group">
+                                        <i class="bi bi-clock-history"></i>
+                                        <span>
                                             @{
-                                                var minutesAgo = (int)(DateTime.UtcNow - thread.LastReplyAt).TotalMinutes;
-                                                if (minutesAgo < 60)
+                                                var lastReplyMinutes = (int)(DateTime.UtcNow - thread.LastReplyAt).TotalMinutes;
+                                                if (lastReplyMinutes < 1)
                                                 {
-                                                    @minutesAgo@("m");
+                                                    <text>last reply now</text>
+                                                }
+                                                else if (lastReplyMinutes < 60)
+                                                {
+                                                    @lastReplyMinutes <text>m</text>
                                                 }
                                                 else if ((int)(DateTime.UtcNow - thread.LastReplyAt).TotalHours < 24)
                                                 {
-                                                    @((int)(DateTime.UtcNow - thread.LastReplyAt).TotalHours)@("h");
+                                                    @((int)(DateTime.UtcNow - thread.LastReplyAt).TotalHours) <text>h</text>
                                                 }
                                                 else
                                                 {
-                                                    @((int)(DateTime.UtcNow - thread.LastReplyAt).TotalDays)@("d");
+                                                    @((int)(DateTime.UtcNow - thread.LastReplyAt).TotalDays) <text>d</text>
                                                 }
                                             }
-                                        </div>
-                                        <div class="stat-label">آخر رد</div>
+                                        </span>
                                     </div>
                                 }
                             </div>
+                            <a asp-page="/Thread" asp-route-id="@thread.Id" class="thread-read-more">
+                                Read More <i class="bi bi-arrow-right"></i>
+                            </a>
                         </div>
                     </div>
                 }

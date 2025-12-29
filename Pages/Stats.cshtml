@@ -1,7 +1,7 @@
 @page
 @model StatsModel
 @{
-    ViewData["Title"] = "إحصائيات المنتدى";
+    ViewData["Title"] = "Forum Statistics";
 }
 
 <div class="container my-5">
@@ -11,7 +11,7 @@
                 <div class="card-header bg-gradient text-white py-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
                     <h2 class="text-center mb-0">
                         <i class="bi bi-graph-up-arrow me-2"></i>
-                        إحصائيات منتدى المهندسين العرب
+                        Engineering Forum Statistics
                     </h2>
                 </div>
                 <div class="card-body p-5">
@@ -22,7 +22,7 @@
                             <div class="stat-card text-center p-4 rounded-3 shadow-sm" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
                                 <div class="stat-icon mb-3" style="font-size: 3rem;">👥</div>
                                 <h3 class="display-4 fw-bold mb-2">@Model.TotalUsers</h3>
-                                <p class="mb-0 fw-semibold">إجمالي الأعضاء</p>
+                                <p class="mb-0 fw-semibold">Total Members</p>
                             </div>
                         </div>
                         
@@ -30,7 +30,7 @@
                             <div class="stat-card text-center p-4 rounded-3 shadow-sm" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
                                 <div class="stat-icon mb-3" style="font-size: 3rem;">📝</div>
                                 <h3 class="display-4 fw-bold mb-2">@Model.TotalThreads</h3>
-                                <p class="mb-0 fw-semibold">إجمالي المواضيع</p>
+                                <p class="mb-0 fw-semibold">Total Threads</p>
                             </div>
                         </div>
                         
@@ -38,7 +38,7 @@
                             <div class="stat-card text-center p-4 rounded-3 shadow-sm" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
                                 <div class="stat-icon mb-3" style="font-size: 3rem;">💬</div>
                                 <h3 class="display-4 fw-bold mb-2">@Model.TotalReplies</h3>
-                                <p class="mb-0 fw-semibold">إجمالي الردود</p>
+                                <p class="mb-0 fw-semibold">Total Replies</p>
                             </div>
                         </div>
                         
@@ -46,7 +46,7 @@
                             <div class="stat-card text-center p-4 rounded-3 shadow-sm" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white;">
                                 <div class="stat-icon mb-3" style="font-size: 3rem;">📊</div>
                                 <h3 class="display-4 fw-bold mb-2">@Model.TotalCategories</h3>
-                                <p class="mb-0 fw-semibold">الأقسام</p>
+                                <p class="mb-0 fw-semibold">Categories</p>
                             </div>
                         </div>
                     </div>
@@ -55,15 +55,15 @@
                     <div class="mb-5">
                         <h3 class="mb-4 text-primary">
                             <i class="bi bi-people-fill me-2"></i>
-                            أحدث الأعضاء
+                            Recent Members
                         </h3>
                         <div class="table-responsive">
                             <table class="table table-hover">
                                 <thead class="table-light">
                                     <tr>
-                                        <th><i class="bi bi-person-badge me-1"></i>اسم المستخدم</th>
-                                        <th><i class="bi bi-calendar-check me-1"></i>تاريخ التسجيل</th>
-                                        <th><i class="bi bi-shield-check me-1"></i>الحالة</th>
+                                        <th><i class="bi bi-person-badge me-1"></i>Username</th>
+                                        <th><i class="bi bi-calendar-check me-1"></i>Registration Date</th>
+                                        <th><i class="bi bi-shield-check me-1"></i>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -74,13 +74,13 @@
                                                 <strong>@user.Username</strong>
                                                 @if (user.IsAdmin)
                                                 {
-                                                    <span class="badge bg-danger ms-2">مدير</span>
+                                                    <span class="badge bg-danger ms-2">Admin</span>
                                                 }
                                             </td>
-                                            <td>@user.CreatedAt.ToString("dd/MM/yyyy")</td>
+                                            <td>@user.CreatedAt.ToString("MM/dd/yyyy")</td>
                                             <td>
                                                 <span class="badge bg-success">
-                                                    <i class="bi bi-check-circle me-1"></i>نشط
+                                                    <i class="bi bi-check-circle me-1"></i>Active
                                                 </span>
                                             </td>
                                         </tr>
@@ -94,7 +94,7 @@
                     <div class="mb-4">
                         <h3 class="mb-4 text-primary">
                             <i class="bi bi-file-text-fill me-2"></i>
-                            أحدث المواضيع
+                            Recent Threads
                         </h3>
                         <div class="list-group">
                             @foreach (var thread in Model.RecentThreads.Take(10))
@@ -102,12 +102,12 @@
                                 <a href="/Thread?id=@thread.Id" class="list-group-item list-group-item-action">
                                     <div class="d-flex w-100 justify-content-between">
                                         <h5 class="mb-1">@thread.Title</h5>
-                                        <small class="text-muted">@thread.CreatedAt.ToString("dd/MM/yyyy")</small>
+                                        <small class="text-muted">@thread.CreatedAt.ToString("MM/dd/yyyy")</small>
                                     </div>
                                     <p class="mb-1 text-muted">
                                         <i class="bi bi-person me-1"></i>@thread.AuthorUsername
                                         <span class="ms-3">
-                                            <i class="bi bi-chat-dots me-1"></i>@thread.ReplyCount ردود
+                                            <i class="bi bi-chat-dots me-1"></i>@thread.ReplyCount replies
                                         </span>
                                     </p>
                                 </a>
@@ -117,7 +117,7 @@
 
                     <div class="text-center mt-4">
                         <a asp-page="/Index" class="btn btn-primary btn-lg rounded-pill px-5">
-                            <i class="bi bi-house-door me-2"></i>العودة للرئيسية
+                            <i class="bi bi-house-door me-2"></i>Back to Home
                         </a>
                     </div>
                 </div>

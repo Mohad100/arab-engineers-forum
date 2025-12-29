@@ -48,7 +48,7 @@ html {
 }
 
 body {
-    font-family: 'Cairo', 'Tajawal', 'Almarai', 'Noto Sans Arabic', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-family: 'Poppins', 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     background-color: var(--bg-primary);
     background-image: 
         linear-gradient(45deg, rgba(37, 99, 235, 0.05) 0%, transparent 50%),
@@ -72,9 +72,14 @@ body::before {
     right: 0;
     bottom: 0;
     background-image: 
+        url('/images/architecture-section.png'),
         repeating-linear-gradient(0deg, rgba(59, 130, 246, 0.02) 0px, transparent 1px, transparent 40px),
         repeating-linear-gradient(90deg, rgba(59, 130, 246, 0.02) 0px, transparent 1px, transparent 40px),
         repeating-linear-gradient(45deg, transparent 0px, transparent 10px, rgba(99, 102, 241, 0.01) 10px, rgba(99, 102, 241, 0.01) 11px);
+    background-size: cover, 100% 100%, 100% 100%, 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.03;
     pointer-events: none;
     z-index: 0;
 }
@@ -273,104 +278,339 @@ body::before {
 }
 
 /* Civil Engineering - Purple Construction */
-.category-bg-civil {
-    background-image: 
-        linear-gradient(135deg, rgba(30, 41, 59, 0.45) 0%, rgba(30, 41, 59, 0.55) 100%),
-        url('/images/civil-bg.png');
-    background-size: cover, cover;
-    background-position: center, center;
-    background-repeat: no-repeat, no-repeat;
+.category-row-card.category-bg-civil {
+    background: 
+        linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.9) 100%),
+        url('/images/civil-engineering-bg.jpg.png') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
 }
 
-.category-bg-civil .category-desc,
+.category-bg-civil .category-row-name {
+    color: #1e293b !important;
+    font-size: 1.5rem !important;
+    font-weight: 800 !important;
+    text-shadow: none;
+}
+
+.category-bg-civil .category-row-desc {
+    color: #475569 !important;
+    font-size: 1rem !important;
+    font-weight: 500 !important;
+    text-shadow: none;
+}
+
+.category-bg-civil .stat-number {
+    color: #1e293b !important;
+    font-size: 1.75rem !important;
+    font-weight: 800 !important;
+    text-shadow: none;
+}
+
+.category-bg-civil .stat-label {
+    color: #475569 !important;
+    font-weight: 600 !important;
+    text-shadow: none;
+}
+
+.category-bg-civil .latest-title,
+.category-bg-civil .latest-author,
+.category-bg-civil .latest-time {
+    color: #1e293b !important;
+    text-shadow: none;
+}
+
 .category-bg-civil .category-footer {
     display: none;
 }
 
 /* Electrical Engineering - Yellow Energy */
-.category-bg-electrical {
-    background-image: 
-        linear-gradient(135deg, rgba(30, 41, 59, 0.45) 0%, rgba(30, 41, 59, 0.55) 100%),
-        url('/images/electrical-bg.png');
-    background-size: cover, cover;
-    background-position: center, center;
-    background-repeat: no-repeat, no-repeat;
+.category-row-card.category-bg-electrical {
+    background: 
+        linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.9) 100%),
+        url('/images/elect-section%20.png') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
 }
 
-.category-bg-electrical .category-desc,
+.category-bg-electrical .category-row-name {
+    color: #1e293b !important;
+    font-size: 1.5rem !important;
+    font-weight: 800 !important;
+    text-shadow: none;
+}
+
+.category-bg-electrical .category-row-desc {
+    color: #475569 !important;
+    font-size: 1rem !important;
+    font-weight: 500 !important;
+    text-shadow: none;
+}
+
+.category-bg-electrical .stat-number {
+    color: #1e293b !important;
+    font-size: 1.75rem !important;
+    font-weight: 800 !important;
+    text-shadow: none;
+}
+
+.category-bg-electrical .stat-label {
+    color: #475569 !important;
+    font-weight: 600 !important;
+    text-shadow: none;
+}
+
+.category-bg-electrical .latest-title,
+.category-bg-electrical .latest-author,
+.category-bg-electrical .latest-time {
+    color: #1e293b !important;
+    text-shadow: none;
+}
+
 .category-bg-electrical .category-footer {
     display: none;
 }
 
 /* Mechanical Engineering - Gray Metal */
-.category-bg-mechanical {
-    background-image: 
-        linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(30, 41, 59, 0.9) 100%),
-        repeating-linear-gradient(45deg, rgba(71, 85, 105, 0.03) 0px, rgba(71, 85, 105, 0.03) 2px, transparent 2px, transparent 4px),
-        repeating-linear-gradient(-45deg, rgba(100, 116, 139, 0.03) 0px, rgba(100, 116, 139, 0.03) 2px, transparent 2px, transparent 4px),
-        radial-gradient(circle at 50% 50%, rgba(71, 85, 105, 0.1) 0%, transparent 50%);
+.category-row-card.category-bg-mechanical {
+    background: 
+        linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.9) 100%),
+        url('/images/mechnical-section%20.png') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+}
+
+.category-bg-mechanical .category-row-name {
+    color: #1e293b !important;
+    font-size: 1.5rem !important;
+    font-weight: 800 !important;
+    text-shadow: none;
+}
+
+.category-bg-mechanical .category-row-desc {
+    color: #475569 !important;
+    font-size: 1rem !important;
+    font-weight: 500 !important;
+    text-shadow: none;
+}
+
+.category-bg-mechanical .stat-number {
+    color: #1e293b !important;
+    font-size: 1.75rem !important;
+    font-weight: 800 !important;
+    text-shadow: none;
+}
+
+.category-bg-mechanical .stat-label {
+    color: #475569 !important;
+    font-weight: 600 !important;
+    text-shadow: none;
+}
+
+.category-bg-mechanical .latest-title,
+.category-bg-mechanical .latest-author,
+.category-bg-mechanical .latest-time {
+    color: #1e293b !important;
+    text-shadow: none;
+}
+
+.category-bg-mechanical .category-footer {
+    display: none;
 }
 
 /* Software Engineering - Green Code */
-.category-bg-software {
-    background-image: 
-        linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(30, 41, 59, 0.9) 100%),
-        repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(16, 185, 129, 0.03) 2px, rgba(16, 185, 129, 0.03) 4px),
-        radial-gradient(circle at 10% 10%, rgba(16, 185, 129, 0.1) 0%, transparent 30%),
-        radial-gradient(circle at 90% 90%, rgba(5, 150, 105, 0.1) 0%, transparent 30%);
+.category-row-card.category-bg-software {
+    background: 
+        linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.9) 100%),
+        url('/images/software-section.png') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+}
+
+.category-bg-software .category-row-name {
+    color: #1e293b !important;
+    font-size: 1.5rem !important;
+    font-weight: 800 !important;
+    text-shadow: none;
+}
+
+.category-bg-software .category-row-desc {
+    color: #475569 !important;
+    font-size: 1rem !important;
+    font-weight: 500 !important;
+    text-shadow: none;
+}
+
+.category-bg-software .stat-number {
+    color: #1e293b !important;
+    font-size: 1.75rem !important;
+    font-weight: 800 !important;
+    text-shadow: none;
+}
+
+.category-bg-software .stat-label {
+    color: #475569 !important;
+    font-weight: 600 !important;
+    text-shadow: none;
+}
+
+.category-bg-software .latest-title,
+.category-bg-software .latest-author,
+.category-bg-software .latest-time {
+    color: #1e293b !important;
+    text-shadow: none;
+}
+
+.category-bg-software .category-footer {
+    display: none;
 }
 
 /* Chemical Engineering - Red Reactions */
-.category-bg-chemical {
-    background-image: 
-        linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(30, 41, 59, 0.9) 100%),
-        radial-gradient(circle at 30% 30%, rgba(220, 38, 38, 0.08) 0%, transparent 40%),
-        radial-gradient(circle at 70% 70%, rgba(239, 68, 68, 0.08) 0%, transparent 40%),
-        repeating-linear-gradient(120deg, transparent 0px, transparent 10px, rgba(220, 38, 38, 0.03) 10px, rgba(220, 38, 38, 0.03) 11px);
+.category-row-card.category-bg-chemical {
+    background: 
+        linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.9) 100%),
+        url('/images/chemical-section%20.png') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+}
+
+.category-bg-chemical .category-row-name {
+    color: #1e293b !important;
+    font-size: 1.5rem !important;
+    font-weight: 800 !important;
+    text-shadow: none;
+}
+
+.category-bg-chemical .category-row-desc {
+    color: #475569 !important;
+    font-size: 1rem !important;
+    font-weight: 500 !important;
+    text-shadow: none;
+}
+
+.category-bg-chemical .stat-number {
+    color: #1e293b !important;
+    font-size: 1.75rem !important;
+    font-weight: 800 !important;
+    text-shadow: none;
+}
+
+.category-bg-chemical .stat-label {
+    color: #475569 !important;
+    font-weight: 600 !important;
+    text-shadow: none;
+}
+
+.category-bg-chemical .latest-title,
+.category-bg-chemical .latest-author,
+.category-bg-chemical .latest-time {
+    color: #1e293b !important;
+    text-shadow: none;
+}
+
+.category-bg-chemical .category-footer {
+    display: none;
 }
 
 /* Architecture - Amber Building */
-.category-bg-architecture {
-    background-image: 
-        linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(30, 41, 59, 0.9) 100%),
-        repeating-linear-gradient(0deg, transparent 0px, transparent 30px, rgba(217, 119, 6, 0.04) 30px, rgba(217, 119, 6, 0.04) 31px),
-        repeating-linear-gradient(90deg, transparent 0px, transparent 30px, rgba(245, 158, 11, 0.04) 30px, rgba(245, 158, 11, 0.04) 31px),
-        radial-gradient(circle at 50% 0%, rgba(217, 119, 6, 0.1) 0%, transparent 60%);
+.category-row-card.category-bg-architecture {
+    background: 
+        linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.9) 100%),
+        url('/images/architecture-section.png') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
 }
 
-/* Industrial Engineering - Blue Professional */
-.category-bg-industrial {
-    background-image: 
-        linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(30, 41, 59, 0.9) 100%),
-        repeating-linear-gradient(45deg, transparent 0px, transparent 15px, rgba(37, 99, 235, 0.04) 15px, rgba(37, 99, 235, 0.04) 16px),
-        repeating-linear-gradient(-45deg, transparent 0px, transparent 15px, rgba(59, 130, 246, 0.04) 15px, rgba(59, 130, 246, 0.04) 16px),
-        radial-gradient(circle at 80% 80%, rgba(37, 99, 235, 0.1) 0%, transparent 50%);
+.category-bg-architecture .category-row-name {
+    color: #1e293b !important;
+    font-size: 1.5rem !important;
+    font-weight: 800 !important;
+    text-shadow: none;
 }
 
-/* Biomedical Engineering - Pink Medical */
-.category-bg-biomedical {
-    background-image: 
-        linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(30, 41, 59, 0.9) 100%),
-        radial-gradient(circle at 20% 50%, rgba(236, 72, 153, 0.08) 0%, transparent 40%),
-        radial-gradient(circle at 80% 50%, rgba(244, 114, 182, 0.08) 0%, transparent 40%),
-        repeating-linear-gradient(30deg, transparent 0px, transparent 8px, rgba(236, 72, 153, 0.03) 8px, rgba(236, 72, 153, 0.03) 9px);
+.category-bg-architecture .category-row-desc {
+    color: #475569 !important;
+    font-size: 1rem !important;
+    font-weight: 500 !important;
+    text-shadow: none;
 }
 
-/* Aerospace Engineering - Cyan Sky */
-.category-bg-aerospace {
-    background-image: 
-        linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(30, 41, 59, 0.9) 100%),
-        repeating-linear-gradient(60deg, transparent 0px, transparent 20px, rgba(6, 182, 212, 0.04) 20px, rgba(6, 182, 212, 0.04) 21px),
-        repeating-linear-gradient(-60deg, transparent 0px, transparent 20px, rgba(14, 165, 233, 0.04) 20px, rgba(14, 165, 233, 0.04) 21px),
-        radial-gradient(circle at 50% 0%, rgba(6, 182, 212, 0.1) 0%, transparent 70%);
+.category-bg-architecture .stat-number {
+    color: #1e293b !important;
+    font-size: 1.75rem !important;
+    font-weight: 800 !important;
+    text-shadow: none;
+}
+
+.category-bg-architecture .stat-label {
+    color: #475569 !important;
+    font-weight: 600 !important;
+    text-shadow: none;
+}
+
+.category-bg-architecture .latest-title,
+.category-bg-architecture .latest-author,
+.category-bg-architecture .latest-time {
+    color: #1e293b !important;
+    text-shadow: none;
+}
+
+.category-bg-architecture .category-footer {
+    display: none;
 }
 
 /* General Discussion - Default Blue */
-.category-bg-discussion {
-    background-image: 
-        linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(30, 41, 59, 0.9) 100%),
-        repeating-linear-gradient(45deg, transparent 0px, transparent 10px, rgba(59, 130, 246, 0.04) 10px, rgba(59, 130, 246, 0.04) 11px),
-        radial-gradient(circle at 30% 70%, rgba(99, 102, 241, 0.1) 0%, transparent 50%);
+.category-row-card.category-bg-discussion {
+    background: 
+        linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.9) 100%),
+        linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+}
+
+.category-bg-discussion .category-row-name {
+    color: #1e293b !important;
+    font-size: 1.5rem !important;
+    font-weight: 800 !important;
+    text-shadow: none;
+}
+
+.category-bg-discussion .category-row-desc {
+    color: #475569 !important;
+    font-size: 1rem !important;
+    font-weight: 500 !important;
+    text-shadow: none;
+}
+
+.category-bg-discussion .stat-number {
+    color: #1e293b !important;
+    font-size: 1.75rem !important;
+    font-weight: 800 !important;
+    text-shadow: none;
+}
+
+.category-bg-discussion .stat-label {
+    color: #475569 !important;
+    font-weight: 600 !important;
+    text-shadow: none;
+}
+
+.category-bg-discussion .latest-title,
+.category-bg-discussion .latest-author,
+.category-bg-discussion .latest-time {
+    color: #1e293b !important;
+    text-shadow: none;
+}
+
+.category-bg-discussion .category-footer {
+    display: none;
 }
 
 .modern-category-card::before {
@@ -763,6 +1003,320 @@ body::before {
 
 .modern-thread-card:hover .thread-arrow {
     transform: translateX(-5px);  /* Changed from translateX(5px) for RTL */
+}
+
+/* New Thread Card Design */
+.threads-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem 0;
+}
+
+.thread-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px var(--shadow-color);
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.thread-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    border-color: var(--accent-blue);
+}
+
+.thread-card.pinned {
+    border-right: 4px solid #ffc107;
+    background: linear-gradient(135deg, var(--card-bg) 0%, rgba(255, 193, 7, 0.05) 100%);
+}
+
+.thread-card.locked {
+    opacity: 0.85;
+    border-left: 4px solid #6c757d;
+}
+
+.thread-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.thread-author-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+}
+
+.thread-avatar-lg {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+}
+
+.thread-author-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.thread-author-name {
+    font-weight: 600;
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 0.95rem;
+}
+
+.thread-author-name:hover {
+    color: var(--accent-blue);
+}
+
+.thread-posted-time {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.thread-badges {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.badge-category,
+.badge-pinned,
+.badge-locked {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.badge-category {
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    color: #1976d2;
+    border: 1px solid #90caf9;
+}
+
+.badge-pinned {
+    background: linear-gradient(135deg, #fff3cd, #ffe69c);
+    color: #856404;
+    border: 1px solid #ffc107;
+}
+
+.badge-locked {
+    background: linear-gradient(135deg, #e9ecef, #dee2e6);
+    color: #495057;
+    border: 1px solid #adb5bd;
+}
+
+.thread-card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.thread-card-title {
+    margin: 0;
+    font-size: 1.1rem;
+    line-height: 1.4;
+}
+
+.thread-title-link {
+    color: var(--text-color);
+    text-decoration: none;
+    font-weight: 700;
+    transition: color 0.2s ease;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.thread-title-link:hover {
+    color: var(--accent-blue);
+}
+
+.thread-card-excerpt {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.thread-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+    gap: 1rem;
+}
+
+.thread-stats {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.stat-group {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.stat-group i {
+    color: var(--accent-blue);
+    font-size: 1rem;
+}
+
+.thread-read-more {
+    color: var(--accent-blue);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.thread-read-more:hover {
+    color: var(--accent-purple);
+    gap: 0.75rem;
+}
+
+.thread-read-more i {
+    transition: transform 0.2s ease;
+}
+
+.thread-read-more:hover i {
+    transform: translateX(-4px);
+}
+
+/* Category-specific backgrounds */
+.forum-page[data-category="civil"] {
+    position: relative;
+}
+
+.forum-page[data-category="civil"]::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('/images/civil-engineering-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    opacity: 0.08;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.forum-page[data-category="civil"] .thread-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+}
+
+[data-theme="dark"] .forum-page[data-category="civil"] .thread-card {
+    background: rgba(26, 32, 44, 0.95);
+    backdrop-filter: blur(10px);
+}
+
+
+/* Category-specific backgrounds */
+.forum-page[data-category="civil"] {
+    position: relative;
+}
+
+.forum-page[data-category="civil"]::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('/images/civil-engineering-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    opacity: 0.08;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.forum-page[data-category="civil"] .thread-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+}
+
+[data-theme="dark"] .forum-page[data-category="civil"] .thread-card {
+    background: rgba(26, 32, 44, 0.95);
+    backdrop-filter: blur(10px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .threads-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .thread-card {
+        padding: 1.25rem;
+    }
+    
+    .thread-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .thread-badges {
+        width: 100%;
+    }
+    
+    .thread-card-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    
+    .thread-stats {
+        width: 100%;
+    }
+    
+    .thread-read-more {
+        align-self: flex-end;
+    }
 }
 
 /* Empty State */
@@ -1365,6 +1919,214 @@ body::before {
     border: 1px solid var(--border-color);
     border-radius: 1.25rem;
     box-shadow: 0 4px 12px var(--shadow-color);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Civil Engineering Forum Header */
+.forum-page[data-category="civil"] .forum-header {
+    background: 
+        linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.9) 100%),
+        url('/images/civil-engineering-bg.jpg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.forum-page[data-category="civil"] .forum-title {
+    color: #1e293b !important;
+    font-size: 2.5rem !important;
+    font-weight: 800 !important;
+    text-shadow: none;
+}
+
+.forum-page[data-category="civil"] .forum-description {
+    color: #475569 !important;
+    font-size: 1.1rem !important;
+    font-weight: 500 !important;
+    text-shadow: none;
+}
+
+.forum-page[data-category="civil"] .back-link {
+    color: #2563eb !important;
+    text-shadow: none;
+}
+
+/* Electrical Engineering Forum Header */
+.forum-page[data-category="electrical"] .forum-header {
+    background: 
+        linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.9) 100%),
+        url('/images/elect-section%20.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.forum-page[data-category="electrical"] .forum-title {
+    color: #1e293b !important;
+    font-size: 2.5rem !important;
+    font-weight: 800 !important;
+    text-shadow: none;
+}
+
+.forum-page[data-category="electrical"] .forum-description {
+    color: #475569 !important;
+    font-size: 1.1rem !important;
+    font-weight: 500 !important;
+    text-shadow: none;
+}
+
+.forum-page[data-category="electrical"] .back-link {
+    color: #2563eb !important;
+    text-shadow: none;
+}
+
+/* Mechanical Engineering Forum Header */
+.forum-page[data-category="mechanical"] .forum-header {
+    background: 
+        linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.9) 100%),
+        url('/images/mechnical-section%20.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.forum-page[data-category="mechanical"] .forum-title {
+    color: #1e293b !important;
+    font-size: 2.5rem !important;
+    font-weight: 800 !important;
+    text-shadow: none;
+}
+
+.forum-page[data-category="mechanical"] .forum-description {
+    color: #475569 !important;
+    font-size: 1.1rem !important;
+    font-weight: 500 !important;
+    text-shadow: none;
+}
+
+.forum-page[data-category="mechanical"] .back-link {
+    color: #2563eb !important;
+    text-shadow: none;
+}
+
+/* Software Engineering Forum Header */
+.forum-page[data-category="software"] .forum-header {
+    background: 
+        linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.9) 100%),
+        url('/images/software-section.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.forum-page[data-category="software"] .forum-title {
+    color: #1e293b !important;
+    font-size: 2.5rem !important;
+    font-weight: 800 !important;
+    text-shadow: none;
+}
+
+.forum-page[data-category="software"] .forum-description {
+    color: #475569 !important;
+    font-size: 1.1rem !important;
+    font-weight: 500 !important;
+    text-shadow: none;
+}
+
+.forum-page[data-category="software"] .back-link {
+    color: #2563eb !important;
+    text-shadow: none;
+}
+
+/* Chemical Engineering Forum Header */
+.forum-page[data-category="chemical"] .forum-header {
+    background: 
+        linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.9) 100%),
+        url('/images/chemical-section%20.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.forum-page[data-category="chemical"] .forum-title {
+    color: #1e293b !important;
+    font-size: 2.5rem !important;
+    font-weight: 800 !important;
+    text-shadow: none;
+}
+
+.forum-page[data-category="chemical"] .forum-description {
+    color: #475569 !important;
+    font-size: 1.1rem !important;
+    font-weight: 500 !important;
+    text-shadow: none;
+}
+
+.forum-page[data-category="chemical"] .back-link {
+    color: #2563eb !important;
+    text-shadow: none;
+}
+
+/* Architecture Engineering Forum Header */
+.forum-page[data-category="architecture"] .forum-header {
+    background: 
+        linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.9) 100%),
+        url('/images/architecture-section.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.forum-page[data-category="architecture"] .forum-title {
+    color: #1e293b !important;
+    font-size: 2.5rem !important;
+    font-weight: 800 !important;
+    text-shadow: none;
+}
+
+.forum-page[data-category="architecture"] .forum-description {
+    color: #475569 !important;
+    font-size: 1.1rem !important;
+    font-weight: 500 !important;
+    text-shadow: none;
+}
+
+.forum-page[data-category="architecture"] .back-link {
+    color: #2563eb !important;
+    text-shadow: none;
+}
+
+/* General Discussion Forum Header */
+.forum-page[data-category="discussion"] .forum-header {
+    background: 
+        linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.9) 100%),
+        linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.forum-page[data-category="discussion"] .forum-title {
+    color: #1e293b !important;
+    font-size: 2.5rem !important;
+    font-weight: 800 !important;
+    text-shadow: none;
+}
+
+.forum-page[data-category="discussion"] .forum-description {
+    color: #475569 !important;
+    font-size: 1.1rem !important;
+    font-weight: 500 !important;
+    text-shadow: none;
+}
+
+.forum-page[data-category="discussion"] .back-link {
+    color: #2563eb !important;
+    text-shadow: none;
 }
 
 .forum-header-content {
@@ -1617,6 +2379,39 @@ body::before {
     text-transform: uppercase;
     letter-spacing: 0.5px;
     font-weight: 600;
+}
+
+
+/* Category-specific backgrounds */
+.forum-page[data-category="civil"] {
+    position: relative;
+}
+
+.forum-page[data-category="civil"]::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('/images/civil-engineering-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    opacity: 0.08;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.forum-page[data-category="civil"] .thread-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+}
+
+[data-theme="dark"] .forum-page[data-category="civil"] .thread-card {
+    background: rgba(26, 32, 44, 0.95);
+    backdrop-filter: blur(10px);
 }
 
 /* Responsive Design */

@@ -1,7 +1,7 @@
 @page
 @model CreateThreadModel
 @{
-    ViewData["Title"] = "إنشاء موضوع";
+    ViewData["Title"] = "Create Topic";
 }
 
 <div class="row justify-content-center my-5">
@@ -12,16 +12,16 @@
                 {
                     <div class="mb-4">
                         <a asp-page="/Forum" asp-route-category="@Model.PreselectedCategory.Id" class="btn btn-sm btn-outline-secondary rounded-pill">
-                            ← العودة إلى @Model.PreselectedCategory.Name
+                            ← Back to @Model.PreselectedCategory.Name
                         </a>
                     </div>
-                    <h2 class="mb-4 fw-bold text-primary">✨ إنشاء موضوع جديد في @Model.PreselectedCategory.Icon @Model.PreselectedCategory.Name</h2>
+                    <h2 class="mb-4 fw-bold text-primary">✨ Create New Topic in @Model.PreselectedCategory.Icon @Model.PreselectedCategory.Name</h2>
                     <p class="text-muted mb-4">@Model.PreselectedCategory.Description</p>
                 }
                 else
                 {
-                    <h2 class="mb-4 fw-bold text-primary">✨ إنشاء موضوع جديد</h2>
-                    <p class="text-muted mb-4">ابدأ محادثة جديدة وشارك أفكارك مع المجتمع!</p>
+                    <h2 class="mb-4 fw-bold text-primary">✨ Create New Topic</h2>
+                    <p class="text-muted mb-4">Start a new conversation and share your ideas with the community!</p>
                 }
 
                 @if (!string.IsNullOrEmpty(Model.ErrorMessage))
@@ -36,7 +36,7 @@
                     @if (Model.PreselectedCategory == null)
                     {
                         <div class="mb-4">
-                            <label asp-for="Input.CategoryId" class="form-label fw-semibold fs-5">القسم</label>
+                            <label asp-for="Input.CategoryId" class="form-label fw-semibold fs-5">Category</label>
                             <select asp-for="Input.CategoryId" class="form-select form-select-lg rounded-pill">
                                 @foreach (var category in Fourm.Models.ForumCategory.AllCategories)
                                 {
@@ -53,34 +53,34 @@
                     }
 
                     <div class="mb-4">
-                        <label asp-for="Input.Title" class="form-label fw-semibold fs-5">عنوان الموضوع</label>
+                        <label asp-for="Input.Title" class="form-label fw-semibold fs-5">Topic Title</label>
                         <input asp-for="Input.Title" class="form-control form-control-lg rounded-pill" 
-                               placeholder="عن ماذا يتحدث موضوعك؟" autofocus />
+                               placeholder="What's your topic about?" autofocus />
                         <span asp-validation-for="Input.Title" class="text-danger small"></span>
                     </div>
 
                     <div class="mb-4">
-                        <label asp-for="Input.Content" class="form-label fw-semibold fs-5">المحتوى</label>
+                        <label asp-for="Input.Content" class="form-label fw-semibold fs-5">Content</label>
                         <div class="text-editor-toolbar">
                             <div class="toolbar-group">
-                                <button type="button" class="toolbar-btn" onclick="formatText('bold')" title="غامق">
+                                <button type="button" class="toolbar-btn" onclick="formatText('bold')" title="Bold">
                                     <i class="bi bi-type-bold"></i>
                                 </button>
-                                <button type="button" class="toolbar-btn" onclick="formatText('italic')" title="مائل">
+                                <button type="button" class="toolbar-btn" onclick="formatText('italic')" title="Italic">
                                     <i class="bi bi-type-italic"></i>
                                 </button>
-                                <button type="button" class="toolbar-btn" onclick="formatText('underline')" title="تحته خط">
+                                <button type="button" class="toolbar-btn" onclick="formatText('underline')" title="Underline">
                                     <i class="bi bi-type-underline"></i>
                                 </button>
-                                <button type="button" class="toolbar-btn" onclick="formatText('strikethrough')" title="يتوسطه خط">
+                                <button type="button" class="toolbar-btn" onclick="formatText('strikethrough')" title="Strikethrough">
                                     <i class="bi bi-type-strikethrough"></i>
                                 </button>
                             </div>
                             <span class="toolbar-divider"></span>
                             <div class="toolbar-group">
                                 <select class="toolbar-select" onchange="setFontFamily(this.value)">
-                                    <option value="">نوع الخط</option>
-                                    <option value="'Segoe UI', 'Cairo', 'Tajawal', sans-serif">الافتراضي</option>
+                                    <option value="">Font</option>
+                                    <option value="'Segoe UI', 'Inter', 'Roboto', sans-serif">Default</option>
                                     <option value="'Arial', sans-serif">Arial</option>
                                     <option value="'Times New Roman', serif">Times New Roman</option>
                                     <option value="'Courier New', monospace">Courier New</option>
@@ -88,7 +88,7 @@
                                     <option value="'Verdana', sans-serif">Verdana</option>
                                 </select>
                                 <select class="toolbar-select" onchange="setFontSize(this.value)">
-                                    <option value="">حجم الخط</option>
+                                    <option value="">Font Size</option>
                                     <option value="12px">12</option>
                                     <option value="14px">14</option>
                                     <option value="16px" selected>16</option>
@@ -102,58 +102,58 @@
                             </div>
                             <span class="toolbar-divider"></span>
                             <div class="toolbar-group">
-                                <input type="color" class="toolbar-color" onchange="setTextColor(this.value)" title="لون النص" value="#000000">
-                                <input type="color" class="toolbar-color" onchange="setBackgroundColor(this.value)" title="لون الخلفية" value="#ffffff">
+                                <input type="color" class="toolbar-color" onchange="setTextColor(this.value)" title="Text Color" value="#000000">
+                                <input type="color" class="toolbar-color" onchange="setBackgroundColor(this.value)" title="Background Color" value="#ffffff">
                             </div>
                             <span class="toolbar-divider"></span>
                             <div class="toolbar-group">
-                                <button type="button" class="toolbar-btn" onclick="formatText('alignRight')" title="محاذاة لليمين">
-                                    <i class="bi bi-text-right"></i>
-                                </button>
-                                <button type="button" class="toolbar-btn" onclick="formatText('alignCenter')" title="محاذاة للوسط">
-                                    <i class="bi bi-text-center"></i>
-                                </button>
-                                <button type="button" class="toolbar-btn" onclick="formatText('alignLeft')" title="محاذاة لليسار">
+                                <button type="button" class="toolbar-btn" onclick="formatText('alignLeft')" title="Align Left">
                                     <i class="bi bi-text-left"></i>
                                 </button>
+                                <button type="button" class="toolbar-btn" onclick="formatText('alignCenter')" title="Align Center">
+                                    <i class="bi bi-text-center"></i>
+                                </button>
+                                <button type="button" class="toolbar-btn" onclick="formatText('alignRight')" title="Align Right">
+                                    <i class="bi bi-text-right"></i>
+                                </button>
                             </div>
                             <span class="toolbar-divider"></span>
                             <div class="toolbar-group">
-                                <button type="button" class="toolbar-btn" onclick="insertEmoji()" title="إدراج رمز تعبيري">
+                                <button type="button" class="toolbar-btn" onclick="insertEmoji()" title="Insert Emoji">
                                     <i class="bi bi-emoji-smile"></i>
                                 </button>
-                                <button type="button" class="toolbar-btn" onclick="insertLink()" title="إدراج رابط">
+                                <button type="button" class="toolbar-btn" onclick="insertLink()" title="Insert Link">
                                     <i class="bi bi-link-45deg"></i>
                                 </button>
-                                <button type="button" class="toolbar-btn" onclick="clearFormatting()" title="مسح التنسيق">
+                                <button type="button" class="toolbar-btn" onclick="clearFormatting()" title="Clear Formatting">
                                     <i class="bi bi-eraser"></i>
                                 </button>
                             </div>
                         </div>
                         <textarea asp-for="Input.Content" id="replyTextarea" class="form-control formatted-textarea" rows="10" 
-                                  placeholder="شارك أفكارك، اطرح أسئلة، أو ابدأ نقاشاً... يمكنك لصق الصور مباشرة (Ctrl+V)" style="font-size: 16px;"></textarea>
+                                  placeholder="Share your thoughts, ask questions, or start a discussion... You can paste images directly (Ctrl+V)" style="font-size: 16px;"></textarea>
                         <span asp-validation-for="Input.Content" class="text-danger small"></span>
-                        <small class="text-muted">يمكنك استخدام ما يصل إلى 5000 حرف.</small>
+                        <small class="text-muted">You can use up to 5000 characters.</small>
                         <div id="pastedImagesPreview" class="pasted-images-preview"></div>
                     </div>
 
                     <div class="mb-4">
-                        <label asp-for="Input.Image" class="form-label fw-semibold fs-5">📷 إرفاق صورة (اختياري)</label>
+                        <label asp-for="Input.Image" class="form-label fw-semibold fs-5">📷 Attach Image (Optional)</label>
                         <input asp-for="Input.Image" type="file" class="form-control form-control-lg" 
                                accept="image/*" onchange="previewImage(event)" />
                         <span asp-validation-for="Input.Image" class="text-danger small"></span>
-                        <small class="text-muted d-block mt-1">الصيغ المقبولة: JPG، PNG، GIF. الحد الأقصى: 5 ميجابايت</small>
+                        <small class="text-muted d-block mt-1">Accepted formats: JPG, PNG, GIF. Max size: 5 MB</small>
                         <div id="imagePreview" class="mt-3" style="display: none;">
-                            <img id="preview" src="" alt="معاينة" class="img-fluid rounded shadow-sm" style="max-height: 300px;" />
+                            <img id="preview" src="" alt="Preview" class="img-fluid rounded shadow-sm" style="max-height: 300px;" />
                         </div>
                     </div>
 
                     <div class="d-flex gap-3">
                         <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5">
-                            🚀 نشر الموضوع
+                            🚀 Post Topic
                         </button>
                         <a asp-page="/Forum" class="btn btn-outline-secondary btn-lg rounded-pill px-5">
-                            إلغاء
+                            Cancel
                         </a>
                     </div>
                 </form>
@@ -211,12 +211,12 @@
                 textarea.setSelectionRange(start + formattedText.length, start + formattedText.length);
             } else {
                 // Handle alignment without selection
-                if (format === 'alignRight') {
-                    textarea.style.textAlign = 'right';
+                if (format === 'alignLeft') {
+                    textarea.style.textAlign = 'left';
                 } else if (format === 'alignCenter') {
                     textarea.style.textAlign = 'center';
-                } else if (format === 'alignLeft') {
-                    textarea.style.textAlign = 'left';
+                } else if (format === 'alignRight') {
+                    textarea.style.textAlign = 'right';
                 }
             }
         }
@@ -243,7 +243,7 @@
 
         function insertEmoji() {
             const emojis = ['😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '😉', '😊', '😇', '🥰', '😍', '🤩', '😘', '😗', '😚', '😙', '😋', '😛', '😜', '🤪', '😝', '🤑', '🤗', '🤭', '🤔', '🤐', '🤨', '😐', '😑', '😶', '😏', '😒', '🙄', '😬', '🤥', '😌', '😔', '😪', '🤤', '😴', '😷', '🤒', '🤕', '🤢', '🤮', '🤧', '🥵', '🥶', '😶‍🌫️', '🥴', '😵', '🤯', '🤠', '🥳', '😎', '🤓', '🧐', '👍', '👎', '👌', '✌️', '🤞', '🤟', '🤘', '🤙', '👏', '🙌', '👐', '🤲', '🤝', '🙏', '✍️', '💪', '❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💔', '❣️', '💕', '💞', '💓', '💗', '💖', '💘', '💝', '✨', '⭐', '🌟', '💫', '🔥', '💯', '👑', '🎉', '🎊', '🎈', '🎁'];
-            const emoji = prompt('اختر رمز تعبيري:\n\n' + emojis.join(' ') + '\n\nأو اكتب رمزاً يدوياً:');
+            const emoji = prompt('Choose an emoji:\n\n' + emojis.join(' ') + '\n\nOr type one manually:');
             if (emoji) {
                 const textarea = document.getElementById('replyTextarea');
                 const start = textarea.selectionStart;
@@ -258,9 +258,9 @@
             const end = textarea.selectionEnd;
             const selectedText = textarea.value.substring(start, end);
 
-            const url = prompt('أدخل الرابط:');
+            const url = prompt('Enter URL:');
             if (url) {
-                const linkText = selectedText || prompt('أدخل نص الرابط:') || url;
+                const linkText = selectedText || prompt('Enter link text:') || url;
                 const formattedLink = `[${linkText}](${url})`;
                 textarea.value = textarea.value.substring(0, start) + formattedLink + textarea.value.substring(end);
                 textarea.focus();
@@ -270,10 +270,10 @@
         function clearFormatting() {
             const textarea = document.getElementById('replyTextarea');
             textarea.style.fontSize = '16px';
-            textarea.style.fontFamily = "'Segoe UI', 'Cairo', 'Tajawal', sans-serif";
+            textarea.style.fontFamily = "'Segoe UI', 'Inter', 'Roboto', sans-serif";
             textarea.style.color = '#000';
             textarea.style.backgroundColor = '#fff';
-            textarea.style.textAlign = 'right';
+            textarea.style.textAlign = 'left';
         }
 
         // Image paste functionality
@@ -315,7 +315,7 @@
 
                         // Insert reference in textarea
                         const textarea = document.getElementById('replyTextarea');
-                        const imageText = '\n[صورة ملصقة]\n';
+                        const imageText = '\n[Pasted Image]\n';
                         textarea.value += imageText;
                     };
                     reader.readAsDataURL(blob);

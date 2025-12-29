@@ -1,7 +1,7 @@
 @page
 @model IndexModel
 @{
-    ViewData["Title"] = "منتدى المهندسين";
+    ViewData["Title"] = "Engineering Forum";
 }
 
 <!-- Hero Section -->
@@ -11,24 +11,24 @@
             <div class="col-lg-6">
                 <div class="hero-content">
                     <h1 class="hero-title mb-4">
-                        <span class="gradient-text">مرحباً بك في</span><br/>
-                        منتدى المهندسين
+                        <span class="gradient-text">Welcome to</span><br/>
+                        Engineering Forum
                     </h1>
                     
                     @if (User.Identity?.IsAuthenticated == true)
                     {
                         <a asp-page="/CreateThread" class="btn btn-gradient btn-lg px-5 py-3">
-                            <i class="bi bi-plus-circle me-2"></i>ابدأ نقاشاً
+                            <i class="bi bi-plus-circle me-2"></i>Start Discussion
                         </a>
                     }
                     else
                     {
                         <div class="hero-buttons">
                             <a asp-page="/Register" class="btn btn-gradient btn-lg px-5 py-3 me-3">
-                                انضم الآن
+                                Join Now
                             </a>
                             <a asp-page="/Login" class="btn btn-outline-light btn-lg px-5 py-3">
-                                تسجيل الدخول
+                                Login
                             </a>
                         </div>
                     }
@@ -39,17 +39,17 @@
                     <div class="stat-card">
                         <div class="stat-icon">👥</div>
                         <div class="stat-number">@Model.RecentThreads.Select(t => t.AuthorUsername).Distinct().Count()+</div>
-                        <div class="stat-label">الأعضاء النشطون</div>
+                        <div class="stat-label">Active Members</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon">💬</div>
                         <div class="stat-number">@Model.RecentThreads.Count</div>
-                        <div class="stat-label">المناقشات</div>
+                        <div class="stat-label">Discussions</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon">🔥</div>
                         <div class="stat-number">@Model.RecentThreads.Sum(t => t.ReplyCount)</div>
-                        <div class="stat-label">إجمالي الردود</div>
+                        <div class="stat-label">Total Replies</div>
                     </div>
                 </div>
             </div>
@@ -76,7 +76,7 @@
                         <i class="bi bi-people-fill text-white" style="font-size: 3.5rem;"></i>
                     </div>
                     <h2 class="mb-2 fw-bold text-primary">@Model.TotalUsers</h2>
-                    <p class="mb-0 text-muted">إجمالي الأعضاء</p>
+                    <p class="mb-0 text-muted">Total Members</p>
                 </div>
             </div>
         </div>
@@ -87,7 +87,7 @@
                         <i class="bi bi-chat-dots-fill text-white" style="font-size: 3.5rem;"></i>
                     </div>
                     <h2 class="mb-2 fw-bold text-success">@Model.RecentThreads.Count</h2>
-                    <p class="mb-0 text-muted">المواضيع النشطة</p>
+                    <p class="mb-0 text-muted">Active Threads</p>
                 </div>
             </div>
         </div>
@@ -98,7 +98,7 @@
                         <i class="bi bi-calendar-check-fill text-white" style="font-size: 3.5rem;"></i>
                     </div>
                     <h2 class="mb-2 fw-bold text-info">@Model.ThreadsToday</h2>
-                    <p class="mb-0 text-muted">مواضيع اليوم</p>
+                    <p class="mb-0 text-muted">Today's Threads</p>
                 </div>
             </div>
         </div>
@@ -109,8 +109,8 @@
         <div class="col-lg-6 mb-4">
             <div class="card border-0 shadow-sm h-100 bg-white">
                 <div class="card-header bg-white border-0 pt-4 pb-3">
-                    <h4 class="mb-0"><i class="bi bi-fire text-danger me-3" style="font-size: 1.8rem;"></i>المواضيع الرائجة</h4>
-                    <p class="text-muted small mb-0">الأكثر تفاعلاً هذا الأسبوع</p>
+                    <h4 class="mb-0"><i class="bi bi-fire text-danger me-3" style="font-size: 1.8rem;"></i>Trending Topics</h4>
+                    <p class="text-muted small mb-0">Most engaged this week</p>
                 </div>
                 <div class="card-body p-0">
                     @if (Model.TrendingThreads.Any())
@@ -126,7 +126,7 @@
                                                 <i class="bi bi-person-circle me-1"></i>
                                                 <span class="me-3">@thread.AuthorUsername</span>
                                                 <i class="bi bi-clock me-1"></i>
-                                                <span>@thread.CreatedAt.ToString("dd/MM/yyyy")</span>
+                                                <span>@thread.CreatedAt.ToString("MM/dd/yyyy")</span>
                                             </div>
                                         </div>
                                         <span class="badge bg-danger rounded-pill px-3 py-2">
@@ -139,7 +139,7 @@
                     }
                     else
                     {
-                        <p class="text-muted text-center py-5">لا توجد مواضيع رائجة حالياً</p>
+                        <p class="text-muted text-center py-5">No trending topics yet</p>
                     }
                 </div>
             </div>
@@ -148,8 +148,8 @@
         <div class="col-lg-6 mb-4">
             <div class="card border-0 shadow-sm h-100 bg-white">
                 <div class="card-header bg-white border-0 pt-4 pb-3">
-                    <h4 class="mb-0"><i class="bi bi-lightning-fill text-warning me-3" style="font-size: 1.8rem;"></i>آخر النشاطات</h4>
-                    <p class="text-muted small mb-0">المواضيع الأحدث</p>
+                    <h4 class="mb-0"><i class="bi bi-lightning-fill text-warning me-3" style="font-size: 1.8rem;"></i>Recent Activity</h4>
+                    <p class="text-muted small mb-0">Latest discussions</p>
                 </div>
                 <div class="card-body p-0">
                     @if (Model.RecentThreads.Any())
@@ -165,7 +165,7 @@
                                                 <i class="bi bi-person-circle me-1"></i>
                                                 <span class="me-3">@thread.AuthorUsername</span>
                                                 <i class="bi bi-clock me-1"></i>
-                                                <span>@thread.CreatedAt.ToString("dd/MM/yyyy HH:mm")</span>
+                                                <span>@thread.CreatedAt.ToString("MM/dd/yyyy HH:mm")</span>
                                             </div>
                                         </div>
                                         <span class="badge bg-warning text-dark rounded-pill px-3 py-2">
@@ -178,7 +178,7 @@
                     }
                     else
                     {
-                        <p class="text-muted text-center py-5">لا توجد مواضيع حديثة</p>
+                        <p class="text-muted text-center py-5">No recent discussions</p>
                     }
                 </div>
             </div>
@@ -190,8 +190,8 @@
         <div class="col-12">
             <div class="card border-0 shadow-sm bg-white">
                 <div class="card-header bg-white border-0 pt-4 pb-3">
-                    <h4 class="mb-0"><i class="bi bi-trophy-fill text-success me-3" style="font-size: 1.8rem;"></i>أنشط الأعضاء</h4>
-                    <p class="text-muted small mb-0">المساهمون الأكثر نشاطاً</p>
+                    <h4 class="mb-0"><i class="bi bi-trophy-fill text-success me-3" style="font-size: 1.8rem;"></i>Top Contributors</h4>
+                    <p class="text-muted small mb-0">Most active members</p>
                 </div>
                 <div class="card-body">
                     @if (Model.TopContributors.Any())
@@ -207,11 +207,11 @@
                                         <h6 class="mb-1">@user.Username</h6>
                                         @if (user.IsAdmin)
                                         {
-                                            <span class="badge bg-danger small">مدير</span>
+                                            <span class="badge bg-danger small">Admin</span>
                                         }
                                         else
                                         {
-                                            <span class="badge bg-secondary small">عضو</span>
+                                            <span class="badge bg-secondary small">Member</span>
                                         }
                                     </div>
                                 </div>
@@ -220,7 +220,7 @@
                     }
                     else
                     {
-                        <p class="text-muted text-center py-4">لا يوجد أعضاء نشطون بعد</p>
+                        <p class="text-muted text-center py-4">No active members yet</p>
                     }
                 </div>
             </div>
@@ -229,8 +229,8 @@
 
     <!-- Categories Section -->
     <div class="section-header mb-5">
-        <h2 class="section-title">استكشف الأقسام</h2>
-        <p class="section-subtitle">اعثر على المكان المثالي لبدء محادثتك</p>
+        <h2 class="section-title">Explore Categories</h2>
+        <p class="section-subtitle">Find the perfect place to start your conversation</p>
     </div>
 
     <div class="category-rows mb-5">
@@ -252,7 +252,7 @@
                     <div class="category-row-stats">
                         <div class="stat-count">
                             <span class="stat-number">@threadCount</span>
-                            <span class="stat-label">موضوع</span>
+                            <span class="stat-label">Threads</span>
                         </div>
                     </div>
                     @if (latestThread != null)
@@ -271,7 +271,7 @@
                     {
                         <div class="category-row-latest">
                             <div class="empty-state">
-                                <span>لا توجد مشاركات بعد</span>
+                                <span>No posts yet</span>
                             </div>
                         </div>
                     }
