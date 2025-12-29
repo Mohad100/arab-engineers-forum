@@ -5,27 +5,7 @@
     var categoryId = Model.CurrentCategory?.Id ?? "discussion";
 }
 
-<style>
-    body {
-        background-color: @(categoryId == "civil" ? "#e8e5f5" : 
-                          categoryId == "electrical" ? "#e0f2e9" : 
-                          categoryId == "mechanical" ? "#e5e7eb" : 
-                          categoryId == "software" ? "#dcfce7" : 
-                          categoryId == "chemical" ? "#fee2e2" : 
-                          categoryId == "architecture" ? "#fef3c7" : 
-                          categoryId == "industrial" ? "#dbeafe" : 
-                          categoryId == "biomedical" ? "#fce7f3" : 
-                          categoryId == "aerospace" ? "#cffafe" : 
-                          categoryId == "discussion" ? "#f3f4f6" : 
-                          "#f3f4f6") !important;
-    }
-    
-    body::before {
-        display: none;
-    }
-</style>
-
-<div class="forum-page">
+<div class="forum-page" data-category="@categoryId">
     <!-- Header Section -->
     <div class="forum-header">
         <div class="forum-header-content">
