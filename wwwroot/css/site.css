@@ -25,16 +25,16 @@
 
 /* Light Mode - Darker colors */
 [data-theme="light"] {
-    --bg-primary: #e2e8f0;
-    --bg-secondary: #cbd5e1;
-    --bg-tertiary: #94a3b8;
-    --card-bg: #f1f5f9;
-    --card-hover: #e2e8f0;
+    --bg-primary: #f8fafc;
+    --bg-secondary: #f1f5f9;
+    --bg-tertiary: #e2e8f0;
+    --card-bg: #ffffff;
+    --card-hover: #f8fafc;
     --text-primary: #0f172a;
-    --text-secondary: #334155;
-    --text-muted: #475569;
-    --border-color: #cbd5e1;
-    --shadow-color: rgba(0, 0, 0, 0.15);
+    --text-secondary: #475569;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --shadow-color: rgba(0, 0, 0, 0.1);
 }
 
 * {
@@ -2577,5 +2577,78 @@ body::before {
 
 .pasted-images-preview:empty {
     display: none;
+}
+
+/* Theme-aware white cards */
+[data-theme="light"] .bg-white,
+[data-theme="light"] .card.bg-white {
+    background-color: #ffffff !important;
+    color: #0f172a;
+}
+
+[data-theme="dark"] .bg-white,
+[data-theme="dark"] .card.bg-white {
+    background-color: var(--card-bg) !important;
+    color: var(--text-primary);
+}
+
+/* Card headers */
+[data-theme="light"] .card-header.bg-white {
+    background-color: #f8fafc !important;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+[data-theme="dark"] .card-header.bg-white {
+    background-color: var(--bg-secondary) !important;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Text colors for cards */
+[data-theme="light"] .text-dark {
+    color: #0f172a !important;
+}
+
+[data-theme="dark"] .text-dark {
+    color: var(--text-primary) !important;
+}
+
+[data-theme="light"] .text-muted {
+    color: #64748b !important;
+}
+
+[data-theme="dark"] .text-muted {
+    color: var(--text-secondary) !important;
+}
+
+/* List group items */
+[data-theme="light"] .list-group-item {
+    background-color: #ffffff;
+    color: #0f172a;
+    border-color: #e2e8f0;
+}
+
+[data-theme="dark"] .list-group-item {
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+[data-theme="light"] .list-group-item:hover {
+    background-color: #f8fafc;
+}
+
+[data-theme="dark"] .list-group-item:hover {
+    background-color: var(--card-hover);
+}
+
+/* Badges */
+[data-theme="light"] .bg-light {
+    background-color: #f1f5f9 !important;
+    color: #0f172a;
+}
+
+[data-theme="dark"] .bg-light {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary);
 }
 
