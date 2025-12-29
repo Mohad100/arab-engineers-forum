@@ -512,15 +512,16 @@ body::before {
 }
 
 .category-row-icon {
-    width: 60px;
-    height: 60px;
-    min-width: 60px;
-    background: linear-gradient(135deg, rgba(37, 99, 235, 0.15), rgba(14, 165, 233, 0.15));
-    border-radius: 0.75rem;
+    width: 80px;
+    height: 80px;
+    min-width: 80px;
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.9), rgba(14, 165, 233, 0.9));
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2rem;
+    font-size: 2.5rem;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
 }
 
 .category-row-content {
