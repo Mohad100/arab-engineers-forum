@@ -14,9 +14,7 @@
                         <span class="gradient-text">مرحباً بك في</span><br/>
                         منتدى المهندسين
                     </h1>
-                    <p class="hero-subtitle mb-4">
-                        انضم إلى مجتمع سيهات لمشاركة الأخبار والأحداث والتواصل مع أهالي المنطقة.
-                    </p>
+                    
                     @if (User.Identity?.IsAuthenticated == true)
                     {
                         <a asp-page="/CreateThread" class="btn btn-gradient btn-lg px-5 py-3">
