@@ -2226,16 +2226,18 @@ body::before {
 
 /* Thread content styling */
 .thread-display-card {
-    border-radius: 16px;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 2px 8px var(--shadow-color);
+    border-radius: 16px !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: 0 2px 8px var(--shadow-color) !important;
     background: var(--card-bg);
+    overflow: hidden;
 }
 
 .thread-header-section {
     background: var(--bg-primary);
     border-bottom: 1px solid var(--border-color);
     padding: 1.5rem 2rem;
+    border-radius: 16px 16px 0 0;
 }
 
 .thread-header-top {
