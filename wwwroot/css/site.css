@@ -2226,9 +2226,9 @@ body::before {
 
 /* Thread content styling */
 .thread-display-card {
-    border-radius: 0;
-    border: none;
-    box-shadow: none !important;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 8px var(--shadow-color);
     background: var(--card-bg);
 }
 
@@ -4042,7 +4042,8 @@ body::before {
     margin-bottom: 3rem !important;
     transition: background-color 0.2s ease;
     background: var(--card-bg);
-    border-radius: 0.75rem;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
     box-shadow: 0 2px 8px var(--shadow-color);
 }
 
