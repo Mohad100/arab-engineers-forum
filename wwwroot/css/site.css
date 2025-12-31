@@ -78,25 +78,49 @@ html {
     position: relative;
 }
 
-/* Transparent Background Icons for Stats Cards */
-.stat-icon-bg {
+/* Modern Stat Cards */
+.stat-card-modern {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card-modern:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12) !important;
+}
+
+.stat-icon-background {
     position: absolute;
     top: 50%;
-    right: -40px;
-    transform: translateY(-50%);
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    opacity: 0.1;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 0;
 }
 
-.stat-icon-bg i {
+.stat-icon-background i {
     font-size: 120px;
+    opacity: 0.08;
+}
+
+/* Header Icons for Section Cards */
+.header-icon-modern {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.header-icon-modern i {
+    font-size: 24px;
     color: white;
+    opacity: 0.7;
 }
 
 [data-theme="dark"] .row .card.border-0.shadow-sm.bg-white {
@@ -1286,6 +1310,7 @@ body::before {
 .category-row-card.category-bg-discussion {
     background: 
         linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.9) 100%),
+        url('/images/general-discussion.png'),
         linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
     background-size: cover !important;
     background-position: center !important;
