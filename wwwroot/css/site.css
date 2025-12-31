@@ -570,6 +570,10 @@ body::before {
     z-index: 0;
 }
 
+[data-theme="dark"] body::before {
+    opacity: 0.015;
+}
+
 /* Theme Toggle Button */
 .theme-toggle {
     position: fixed;
@@ -626,6 +630,19 @@ body::before {
     width: 200%;
     height: 200%;
     background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+}
+
+[data-theme="dark"] .hero-section {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.3) 0%, rgba(15, 23, 42, 0.3) 100%);
+    border: 2px solid rgba(102, 126, 234, 0.2);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05),
+        0 0 80px rgba(102, 126, 234, 0.05);
+}
+
+[data-theme="dark"] .hero-section::before {
+    background: radial-gradient(circle, rgba(102, 126, 234, 0.05) 0%, transparent 70%);
 }
 
 .hero-container {
@@ -696,6 +713,21 @@ body::before {
         0 15px 45px rgba(102, 126, 234, 0.3),
         0 0 40px rgba(118, 75, 162, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+[data-theme="dark"] .stat-card {
+    background: linear-gradient(135deg, rgba(51, 65, 85, 0.5) 0%, rgba(30, 41, 59, 0.5) 100%);
+    box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .stat-card:hover {
+    background: linear-gradient(135deg, rgba(51, 65, 85, 0.7) 0%, rgba(30, 41, 59, 0.7) 100%);
+    box-shadow: 
+        0 15px 45px rgba(102, 126, 234, 0.2),
+        0 0 40px rgba(118, 75, 162, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .stat-icon {
@@ -866,6 +898,28 @@ body::before {
     display: none;
 }
 
+[data-theme="dark"] .category-row-card.category-bg-civil {
+    background: 
+        linear-gradient(135deg, rgba(15, 23, 42, 0.92) 0%, rgba(30, 41, 59, 0.95) 100%),
+        url('/images/civil-engineering-bg.jpg.png') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+}
+
+[data-theme="dark"] .category-bg-civil .category-row-name,
+[data-theme="dark"] .category-bg-civil .stat-number,
+[data-theme="dark"] .category-bg-civil .latest-title {
+    color: #f8fafc !important;
+}
+
+[data-theme="dark"] .category-bg-civil .category-row-desc,
+[data-theme="dark"] .category-bg-civil .stat-label,
+[data-theme="dark"] .category-bg-civil .latest-author,
+[data-theme="dark"] .category-bg-civil .latest-time {
+    color: #cbd5e1 !important;
+}
+
 /* Electrical Engineering - Yellow Energy */
 .category-row-card.category-bg-electrical {
     background: 
@@ -912,6 +966,28 @@ body::before {
 
 .category-bg-electrical .category-footer {
     display: none;
+}
+
+[data-theme="dark"] .category-row-card.category-bg-electrical {
+    background: 
+        linear-gradient(135deg, rgba(15, 23, 42, 0.92) 0%, rgba(30, 41, 59, 0.95) 100%),
+        url('/images/elect-section%20.png') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+}
+
+[data-theme="dark"] .category-bg-electrical .category-row-name,
+[data-theme="dark"] .category-bg-electrical .stat-number,
+[data-theme="dark"] .category-bg-electrical .latest-title {
+    color: #f8fafc !important;
+}
+
+[data-theme="dark"] .category-bg-electrical .category-row-desc,
+[data-theme="dark"] .category-bg-electrical .stat-label,
+[data-theme="dark"] .category-bg-electrical .latest-author,
+[data-theme="dark"] .category-bg-electrical .latest-time {
+    color: #cbd5e1 !important;
 }
 
 /* Mechanical Engineering - Gray Metal */
@@ -962,6 +1038,28 @@ body::before {
     display: none;
 }
 
+[data-theme="dark"] .category-row-card.category-bg-mechanical {
+    background: 
+        linear-gradient(135deg, rgba(15, 23, 42, 0.92) 0%, rgba(30, 41, 59, 0.95) 100%),
+        url('/images/mechnical-section%20.png') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+}
+
+[data-theme="dark"] .category-bg-mechanical .category-row-name,
+[data-theme="dark"] .category-bg-mechanical .stat-number,
+[data-theme="dark"] .category-bg-mechanical .latest-title {
+    color: #f8fafc !important;
+}
+
+[data-theme="dark"] .category-bg-mechanical .category-row-desc,
+[data-theme="dark"] .category-bg-mechanical .stat-label,
+[data-theme="dark"] .category-bg-mechanical .latest-author,
+[data-theme="dark"] .category-bg-mechanical .latest-time {
+    color: #cbd5e1 !important;
+}
+
 /* Software Engineering - Green Code */
 .category-row-card.category-bg-software {
     background: 
@@ -1008,6 +1106,28 @@ body::before {
 
 .category-bg-software .category-footer {
     display: none;
+}
+
+[data-theme="dark"] .category-row-card.category-bg-software {
+    background: 
+        linear-gradient(135deg, rgba(15, 23, 42, 0.92) 0%, rgba(30, 41, 59, 0.95) 100%),
+        url('/images/software-section.png') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+}
+
+[data-theme="dark"] .category-bg-software .category-row-name,
+[data-theme="dark"] .category-bg-software .stat-number,
+[data-theme="dark"] .category-bg-software .latest-title {
+    color: #f8fafc !important;
+}
+
+[data-theme="dark"] .category-bg-software .category-row-desc,
+[data-theme="dark"] .category-bg-software .stat-label,
+[data-theme="dark"] .category-bg-software .latest-author,
+[data-theme="dark"] .category-bg-software .latest-time {
+    color: #cbd5e1 !important;
 }
 
 /* Chemical Engineering - Red Reactions */
@@ -1058,6 +1178,28 @@ body::before {
     display: none;
 }
 
+[data-theme="dark"] .category-row-card.category-bg-chemical {
+    background: 
+        linear-gradient(135deg, rgba(15, 23, 42, 0.92) 0%, rgba(30, 41, 59, 0.95) 100%),
+        url('/images/chemical-section%20.png') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+}
+
+[data-theme="dark"] .category-bg-chemical .category-row-name,
+[data-theme="dark"] .category-bg-chemical .stat-number,
+[data-theme="dark"] .category-bg-chemical .latest-title {
+    color: #f8fafc !important;
+}
+
+[data-theme="dark"] .category-bg-chemical .category-row-desc,
+[data-theme="dark"] .category-bg-chemical .stat-label,
+[data-theme="dark"] .category-bg-chemical .latest-author,
+[data-theme="dark"] .category-bg-chemical .latest-time {
+    color: #cbd5e1 !important;
+}
+
 /* Architecture - Amber Building */
 .category-row-card.category-bg-architecture {
     background: 
@@ -1106,6 +1248,28 @@ body::before {
     display: none;
 }
 
+[data-theme="dark"] .category-row-card.category-bg-architecture {
+    background: 
+        linear-gradient(135deg, rgba(15, 23, 42, 0.92) 0%, rgba(30, 41, 59, 0.95) 100%),
+        url('/images/architecture-section.png') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+}
+
+[data-theme="dark"] .category-bg-architecture .category-row-name,
+[data-theme="dark"] .category-bg-architecture .stat-number,
+[data-theme="dark"] .category-bg-architecture .latest-title {
+    color: #f8fafc !important;
+}
+
+[data-theme="dark"] .category-bg-architecture .category-row-desc,
+[data-theme="dark"] .category-bg-architecture .stat-label,
+[data-theme="dark"] .category-bg-architecture .latest-author,
+[data-theme="dark"] .category-bg-architecture .latest-time {
+    color: #cbd5e1 !important;
+}
+
 /* General Discussion - Default Blue */
 .category-row-card.category-bg-discussion {
     background: 
@@ -1152,6 +1316,28 @@ body::before {
 
 .category-bg-discussion .category-footer {
     display: none;
+}
+
+[data-theme="dark"] .category-row-card.category-bg-discussion {
+    background: 
+        linear-gradient(135deg, rgba(15, 23, 42, 0.92) 0%, rgba(30, 41, 59, 0.95) 100%),
+        linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+}
+
+[data-theme="dark"] .category-bg-discussion .category-row-name,
+[data-theme="dark"] .category-bg-discussion .stat-number,
+[data-theme="dark"] .category-bg-discussion .latest-title {
+    color: #f8fafc !important;
+}
+
+[data-theme="dark"] .category-bg-discussion .category-row-desc,
+[data-theme="dark"] .category-bg-discussion .stat-label,
+[data-theme="dark"] .category-bg-discussion .latest-author,
+[data-theme="dark"] .category-bg-discussion .latest-time {
+    color: #cbd5e1 !important;
 }
 
 .modern-category-card::before {
